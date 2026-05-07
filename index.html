@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تطور المهارات - المستوى والموارد</title>
+    <style>
+        * { font-family: system-ui, 'Segoe UI', Tahoma, sans-serif; box-sizing: border-box; }
+        body { background: #f0f4f8; margin: 0; padding: 20px; }
+        .container { max-width: 1400px; margin: auto; }
+        .card { background: white; border-radius: 28px; padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        h1 { font-size: 1.8rem; margin: 0 0 8px 0; color: #1e2a3a; }
+        .sub { color: #4a6a85; margin-bottom: 24px; }
+        
+        .stats { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 30px; }
+        .stat-box { background: #eef2ff; padding: 12px 20px; border-radius: 40px; font-weight: bold; }
+        
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; margin-top: 16px; }
+        .skill-card { background: #f8fafc; border-radius: 24px; padding: 18px; border: 1px solid #e2e8f0; transition: transform 0.2s; }
+        .skill-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        
+        .skill-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .skill-name { font-size: 1.2rem; font-weight: 700; color: #1e2a3a; }
+        .reset-skill-btn { background: #e2e8f0; border: none; border-radius: 40px; padding: 6px 14px; cursor: pointer; font-size: 0.75rem; color: #942222; font-weight: bold; transition: 0.2s; }
+        .reset-skill-btn:hover { background: #942222; color: white; }
+        
+        .progress-container { margin-bottom: 15px; }
+        .progress-bar-bg { background: #e2e8f0; border-radius: 60px; height: 10px; overflow: hidden; margin-bottom: 8px; }
+        .progress-bar-fill { background: #2b6e4f; width: 0%; height: 100%; border-radius: 60px; transition: width 0.3s; }
+        .progress-percent { text-align: center; font-size: 1.4rem; font-weight: 800; color: #2b6e4f; margin: 8px 0; }
+        
+        .levels-buttons { display: flex; gap: 8px; margin-bottom: 20px; }
+        .level-btn { flex: 1; background: #e2e8f0; border: none; border-radius: 40px; padding: 8px 0; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .level-btn.active-25 { background: #fbbf24; color: #1e2a3a; }
+        .level-btn.active-50 { background: #f59e0b; color: white; }
+        .level-btn.active-75 { background: #10b981; color: white; }
+        .level-btn.active-100 { background: #2b6e4f; color: white; }
+        .level-btn:hover { transform: scale(1.02); }
+        
+        .resource-section { margin-top: 15px; padding-top: 12px; border-top: 1px dashed #cbd5e1; }
+        .resource-label { font-size: 0.75rem; color: #4a6a85; margin-bottom: 6px; display: block; }
+        .resource-input-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .resource-input { flex: 1; padding: 8px 12px; border-radius: 60px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white; }
+        .resource-input:focus { outline: none; border-color: #1e4a76; }
+        .add-resource-btn { background: #1e4a76; border: none; border-radius: 60px; padding: 8px 14px; cursor: pointer; font-size: 0.7rem; color: white; }
+        .resources-list { margin-top: 10px; list-style: none; }
+        .resource-item { background: #eef2ff; border-radius: 40px; padding: 5px 12px; margin: 5px 0; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .resource-link { color: #1e4a76; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; margin-left: 8px; }
+        .resource-link:hover { text-decoration: underline; }
+        .delete-resource { background: none; border: none; color: #942222; cursor: pointer; font-size: 1rem; padding: 0 5px; }
+        
+        .task-input { display: flex; gap: 10px; margin: 16px 0; flex-wrap: wrap; }
+        .task-input input { flex: 1; padding: 12px; border-radius: 60px; border: 1px solid #cbd5e1; }
+        button { background: #1e4a76; color: white; border: none; border-radius: 60px; padding: 8px 16px; cursor: pointer; }
+        .task-list li { margin: 8px 0; display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 8px 16px; border-radius: 60px; }
+        hr { margin: 20px 0; }
+        
+        @media (max-width: 800px) { .skills-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1>📊 لوحة تطور المهارات</h1>
+        <div class="sub">تتبع مستواك (25% → 50% → 75% → 100%) | أضف مصادر تعلم لكل مهارة</div>
+        
+        <div class="stats" id="statsArea"></div>
+
+        <div class="skills-grid" id="skillsGrid"></div>
+        
+        <hr>
+        <h3>📝 مهامي اليومية / الأسبوعية</h3>
+        <div class="task-input">
+            <input type="text" id="taskName" placeholder="مثال: أنهي درس تحليل البيانات الأول">
+            <button id="addTask">➕ أضف مهمة</button>
+        </div>
+        <ul class="task-list" id="taskList"></ul>
+        
+        <button id="resetAllBtn" style="background:#942222;">🔄 إعادة تعيين كل المهارات والمهام</button>
+    </div>
+</div>
+
+<script>
+    // قائمة المهارات الكاملة مع المهارات الجديدة
+    const allSkills = [
+        "Data Analytics",
+        "Time Management",
+        "Communication",
+        "Creative Thinking",
+        "Social Skills",
+        "Branding",
+        "Budgeting",
+        "Business Management",
+        "Leadership",
+        "Public Speaking",
+        "Calculating Risks",
+        "Sales",
+        "Marketing",
+        "Human Psychology",
+        "Presenting",
+        "Creating System",
+        "Web Development",
+        "Mobile Development"
+    ];
+    
+    // تحميل البيانات
+    let progress = JSON.parse(localStorage.getItem("skillProgressLevels")) || {};
+    let resources = JSON.parse(localStorage.getItem("skillResources")) || {};
+    let tasks = JSON.parse(localStorage.getItem("learningTasks")) || [];
+    
+    // تهيئة المهارات إذا كانت جديدة
+    allSkills.forEach(skill => {
+        if (progress[skill] === undefined) progress[skill] = 0;
+        if (resources[skill] === undefined) resources[skill] = [];
+    });
+    
+    function saveAll() {
+        localStorage.setItem("skillProgressLevels", JSON.stringify(progress));
+        localStorage.setItem("skillResources", JSON.stringify(resources));
+        localStorage.setItem("learningTasks", JSON.stringify(tasks));
+    }
+    
+    function updateStats() {
+        const total = allSkills.length;
+        const avg = allSkills.reduce((sum, s) => sum + progress[s], 0) / total;
+        const avgPercent = Math.round(avg);
+        const completed100 = allSkills.filter(s => progress[s] === 100).length;
+        
+        document.getElementById("statsArea").innerHTML = `
+            <div class="stat-box">📊 متوسط التقدم: ${avgPercent}%</div>
+            <div class="stat-box">🏆 مهارات كاملة (100%): ${completed100}/${total}</div>
+            <div class="stat-box">✅ مهام منجزة: ${tasks.filter(t => t.done).length}/${tasks.length}</div>
+        `;
+    }
+    
+    function renderSkills() {
+        const grid = document.getElementById("skillsGrid");
+        grid.innerHTML = "";
+        
+        allSkills.forEach(skill => {
+            const currentProgress = progress[skill];
+            const skillResources = resources[skill] || [];
+            
+            const card = document.createElement("div");
+            card.className = "skill-card";
+            
+            // أزرار المستويات
+            const levels = [25, 50, 75, 100];
+            let levelsHtml = "";
+            levels.forEach(level => {
+                let activeClass = "";
+                if (currentProgress === level) {
+                    if (level === 25) activeClass = "active-25";
+                    else if (level === 50) activeClass = "active-50";
+                    else if (level === 75) activeClass = "active-75";
+                    else if (level === 100) activeClass = "active-100";
+                }
+                levelsHtml += `<button class="level-btn ${activeClass}" data-skill="${skill}" data-level="${level}">${level}%</button>`;
+            });
+            
+            // قائمة المصادر
+            let resourcesHtml = "";
+            if (skillResources.length > 0) {
+                resourcesHtml = `<ul class="resources-list">`;
+                skillResources.forEach((res, idx) => {
+                    let displayText = res.length > 40 ? res.substring(0, 40) + "..." : res;
+                    resourcesHtml += `
+                        <li class="resource-item">
+                            <a href="${res}" target="_blank" class="resource-link" title="${res}">📖 ${displayText}</a>
+                            <button class="delete-resource" data-skill="${skill}" data-resource-idx="${idx}">✖</button>
+                        </li>
+                    `;
+                });
+                resourcesHtml += `</ul>`;
+            }
+            
+            card.innerHTML = `
+                <div class="skill-header">
+                    <span class="skill-name">${skill}</span>
+                    <button class="reset-skill-btn" data-skill="${skill}">🔄 إعادة تعيين المهارة</button>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-percent">${currentProgress}%</div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: ${currentProgress}%;"></div>
+                    </div>
+                </div>
+                <div class="levels-buttons">
+                    ${levelsHtml}
+                </div>
+                <div class="resource-section">
+                    <div class="resource-label">📚 أضف كتاب، فيديو، أو صفحة ويب للتعلم:</div>
+                    <div class="resource-input-group">
+                        <input type="text" class="resource-input" id="resource-input-${skill.replace(/\s/g, '')}" placeholder="https://... أو عنوان المصدر">
+                        <button class="add-resource-btn" data-skill="${skill}">➕ أضف</button>
+                    </div>
+                    ${resourcesHtml}
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+        
+        // أحداث أزرار المستويات
+        document.querySelectorAll(".level-btn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const skill = btn.getAttribute("data-skill");
+                const level = parseInt(btn.getAttribute("data-level"));
+                if (skill && !isNaN(level)) {
+                    progress[skill] = level;
+                    saveAll();
+                    renderSkills();
+                    updateStats();
+                }
+            });
+        });
+        
+        // أحداث أزرار إعادة تعيين المهارة
+        document.querySelectorAll(".reset-skill-btn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const skill = btn.getAttribute("data-skill");
+                if (confirm(`هل تريد إعادة تعيين "${skill}" إلى 0% وحذف جميع مصادرها؟`)) {
+                    progress[skill] = 0;
+                    resources[skill] = [];
+                    saveAll();
+                    renderSkills();
+                    updateStats();
+                }
+            });
+        });
+        
+        // أحداث أزرار إضافة المصادر
+        document.querySelectorAll(".add-resource-btn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const skill = btn.getAttribute("data-skill");
+                const inputId = `resource-input-${skill.replace(/\s/g, '')}`;
+                const input = document.getElementById(inputId);
+                if (input && input.value.trim() !== "") {
+                    let url = input.value.trim();
+                    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                        url = "https://" + url;
+                    }
+                    resources[skill].push(url);
+                    saveAll();
+                    renderSkills();
+                    updateStats();
+                    input.value = "";
+                }
+            });
+        });
+        
+        // أحداث حذف المصادر
+        document.querySelectorAll(".delete-resource").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const skill = btn.getAttribute("data-skill");
+                const idx = parseInt(btn.getAttribute("data-resource-idx"));
+                if (skill && !isNaN(idx)) {
+                    resources[skill].splice(idx, 1);
+                    saveAll();
+                    renderSkills();
+                    updateStats();
+                }
+            });
+        });
+    }
+    
+    // مهام اليوم
+    function renderTasks() {
+        const taskUl = document.getElementById("taskList");
+        taskUl.innerHTML = "";
+        if (tasks.length === 0) {
+            taskUl.innerHTML = "<li style='text-align:center; color:#4a6a85;'>✨ لا توجد مهام، أضف مهمة جديدة أعلاه</li>";
+            return;
+        }
+        tasks.forEach((task, idx) => {
+            const li = document.createElement("li");
+            li.style.textDecoration = task.done ? "line-through" : "none";
+            li.style.opacity = task.done ? "0.7" : "1";
+            li.innerHTML = `
+                <span>${task.name}</span>
+                <div>
+                    <button class="toggleTask" data-idx="${idx}" style="background:#2c5f2d;">${task.done ? "↩️ تراجع" : "✔ أنجزت"}</button>
+                    <button class="deleteTask" data-idx="${idx}" style="background:#a13e3e;">🗑 حذف</button>
+                </div>
+            `;
+            taskUl.appendChild(li);
+        });
+        
+        document.querySelectorAll(".toggleTask").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const idx = btn.getAttribute("data-idx");
+                tasks[idx].done = !tasks[idx].done;
+                saveAll();
+                renderTasks();
+                updateStats();
+            });
+        });
+        document.querySelectorAll(".deleteTask").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const idx = btn.getAttribute("data-idx");
+                tasks.splice(idx, 1);
+                saveAll();
+                renderTasks();
+                updateStats();
+            });
+        });
+    }
+    
+    document.getElementById("addTask").addEventListener("click", () => {
+        const input = document.getElementById("taskName");
+        if(input.value.trim() === "") return;
+        tasks.push({ name: input.value.trim(), done: false });
+        saveAll();
+        renderTasks();
+        input.value = "";
+        updateStats();
+    });
+    
+    document.getElementById("resetAllBtn").addEventListener("click", () => {
+        if(confirm("⚠️ تحذير: سيتم حذف كل تقدم المهارات، جميع المصادر، وجميع المهام. هل أنت متأكد؟")) {
+            allSkills.forEach(skill => {
+                progress[skill] = 0;
+                resources[skill] = [];
+            });
+            tasks = [];
+            saveAll();
+            renderSkills();
+            renderTasks();
+            updateStats();
+        }
+    });
+    
+    // التهيئة
+    renderSkills();
+    renderTasks();
+    updateStats();
+</script>
+</body>
+</html>
