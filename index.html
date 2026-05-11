@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تطور المهارات - المستوى والموارد</title>
+    <title>لوحة تطور المهارات - تمييز المستوى الأخضر + تنبيه عند حذف الرابط</title>
     <style>
         * { font-family: system-ui, 'Segoe UI', Tahoma, sans-serif; box-sizing: border-box; }
         body { background: #f0f4f8; margin: 0; padding: 20px; }
@@ -15,39 +15,46 @@
         .stats { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 30px; }
         .stat-box { background: #eef2ff; padding: 12px 20px; border-radius: 40px; font-weight: bold; }
         
-        .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; margin-top: 16px; }
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 20px; margin-top: 16px; }
         .skill-card { background: #f8fafc; border-radius: 24px; padding: 18px; border: 1px solid #e2e8f0; transition: transform 0.2s; }
         .skill-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
         
         .skill-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
         .skill-name { font-size: 1.2rem; font-weight: 700; color: #1e2a3a; }
-        .reset-skill-btn { background: #e2e8f0; border: none; border-radius: 40px; padding: 6px 14px; cursor: pointer; font-size: 0.75rem; color: #942222; font-weight: bold; transition: 0.2s; }
-        .reset-skill-btn:hover { background: #942222; color: white; }
         
-        .progress-container { margin-bottom: 15px; }
-        .progress-bar-bg { background: #e2e8f0; border-radius: 60px; height: 10px; overflow: hidden; margin-bottom: 8px; }
-        .progress-bar-fill { background: #2b6e4f; width: 0%; height: 100%; border-radius: 60px; transition: width 0.3s; }
-        .progress-percent { text-align: center; font-size: 1.4rem; font-weight: 800; color: #2b6e4f; margin: 8px 0; }
+        /* المستويات للمهارات العادية */
+        .normal-level-block { background: #ffffff; border-radius: 20px; padding: 12px; margin-bottom: 16px; border: 1px solid #e2edf2; }
+        .level-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+        .level-title { font-weight: bold; color: #1e4a6e; font-size: 0.9rem; }
+        .level-buttons-group { display: flex; gap: 6px; }
+        .level-control-btn { background: #e2e8f0; border: none; border-radius: 40px; padding: 4px 10px; font-size: 0.7rem; cursor: pointer; font-weight: bold; }
+        .level-control-btn.reset-progress { color: #942222; }
+        .level-control-btn.reset-progress:hover { background: #942222; color: white; }
+        .level-control-btn.reset-links { color: #d97706; }
+        .level-control-btn.reset-links:hover { background: #d97706; color: white; }
         
-        .levels-buttons { display: flex; gap: 8px; margin-bottom: 20px; }
-        .level-btn { flex: 1; background: #e2e8f0; border: none; border-radius: 40px; padding: 8px 0; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .level-btn.active-25 { background: #fbbf24; color: #1e2a3a; }
-        .level-btn.active-50 { background: #f59e0b; color: white; }
-        .level-btn.active-75 { background: #10b981; color: white; }
-        .level-btn.active-100 { background: #2b6e4f; color: white; }
-        .level-btn:hover { transform: scale(1.02); }
+        .level-buttons { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+        .level-btn { background: #e2e8f0; border: none; border-radius: 40px; padding: 6px 12px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .level-btn.active-level { background: #2b6e4f; color: white; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .level-btn:hover { transform: scale(1.02); background: #cbd5e1; }
         
-        .resource-section { margin-top: 15px; padding-top: 12px; border-top: 1px dashed #cbd5e1; }
-        .resource-label { font-size: 0.75rem; color: #4a6a85; margin-bottom: 6px; display: block; }
+        /* المهارات الفرعية للشطرنج والإنجليزية */
+        .sub-skill-block { background: #ffffff; border-radius: 20px; padding: 12px; margin-bottom: 16px; border: 1px solid #e2edf2; }
+        .sub-skill-title { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; font-weight: bold; color: #1e4a6e; }
+        .sub-skill-buttons { display: flex; gap: 8px; }
+        
+        .resource-section { margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1; }
+        .resource-label { font-size: 0.7rem; color: #4a6a85; margin-bottom: 6px; display: block; }
         .resource-input-group { display: flex; gap: 8px; flex-wrap: wrap; }
-        .resource-input { flex: 1; padding: 8px 12px; border-radius: 60px; border: 1px solid #cbd5e1; font-size: 0.8rem; background: white; }
-        .resource-input:focus { outline: none; border-color: #1e4a76; }
-        .add-resource-btn { background: #1e4a76; border: none; border-radius: 60px; padding: 8px 14px; cursor: pointer; font-size: 0.7rem; color: white; }
-        .resources-list { margin-top: 10px; list-style: none; }
-        .resource-item { background: #eef2ff; border-radius: 40px; padding: 5px 12px; margin: 5px 0; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .resource-input { flex: 1; padding: 6px 10px; border-radius: 60px; border: 1px solid #cbd5e1; font-size: 0.75rem; background: white; }
+        .add-resource-btn { background: #1e4a76; border: none; border-radius: 60px; padding: 6px 12px; cursor: pointer; font-size: 0.7rem; color: white; }
+        
+        .resources-list { margin-top: 8px; list-style: none; }
+        .resource-item { background: #eef2ff; border-radius: 40px; padding: 4px 10px; margin: 4px 0; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; }
         .resource-link { color: #1e4a76; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; margin-left: 8px; }
         .resource-link:hover { text-decoration: underline; }
-        .delete-resource { background: none; border: none; color: #942222; cursor: pointer; font-size: 1rem; padding: 0 5px; }
+        .delete-resource { background: none; border: none; color: #942222; cursor: pointer; font-size: 1rem; padding: 0 5px; font-weight: bold; }
+        .delete-resource:hover { color: #ff0000; transform: scale(1.1); }
         
         .task-input { display: flex; gap: 10px; margin: 16px 0; flex-wrap: wrap; }
         .task-input input { flex: 1; padding: 12px; border-radius: 60px; border: 1px solid #cbd5e1; }
@@ -62,7 +69,7 @@
 <div class="container">
     <div class="card">
         <h1>📊 لوحة تطور المهارات</h1>
-        <div class="sub">تتبع مستواك (25% → 50% → 75% → 100%) | أضف مصادر تعلم لكل مهارة</div>
+        <div class="sub">✅ المستوى النشط يظهر باللون الأخضر | ❌ تنبيه قبل حذف أي رابط</div>
         
         <div class="stats" id="statsArea"></div>
 
@@ -81,189 +88,477 @@
 </div>
 
 <script>
-    // قائمة المهارات الكاملة مع المهارات الجديدة
-    const allSkills = [
-        "Data Analytics",
-        "Time Management",
-        "Communication",
-        "Creative Thinking",
-        "Social Skills",
-        "Branding",
-        "Budgeting",
-        "Business Management",
-        "Leadership",
-        "Public Speaking",
-        "Calculating Risks",
-        "Sales",
-        "Marketing",
-        "Human Psychology",
-        "Presenting",
-        "Creating System",
-        "Web Development",
-        "Mobile Development"
+    // ======================== تعريف المهارات ========================
+    // المهارات العادية مع مستوياتها
+    const basicSkills = [
+        "Data Analytics", "Time Management", "Communication", "Creative Thinking",
+        "Social Skills", "Branding", "Budgeting", "Business Management",
+        "Leadership", "Public Speaking", "Calculating Risks", "Sales",
+        "Marketing", "Human Psychology", "Presenting", "Creating System",
+        "Web Development", "Mobile Development"
     ];
+    const normalLevels = [0, 25, 50, 75, 100];
     
-    // تحميل البيانات
-    let progress = JSON.parse(localStorage.getItem("skillProgressLevels")) || {};
-    let resources = JSON.parse(localStorage.getItem("skillResources")) || {};
+    // مهارة الشطرنج
+    const chessSkill = {
+        name: "♟️ الشطرنج (Chess)",
+        subSkills: {
+            "Rapid": ["800-1200", "1200-1500", "1500-1800"],
+            "Blitz": ["600-800", "800-1200", "1200-1500", "1500-1800"],
+            "Bullet": ["400-600", "600-800", "800-1200", "1200-1500", "1500-1800"]
+        }
+    };
+    
+    // مهارة اللغة الإنجليزية
+    const englishSkill = {
+        name: "🇬🇧 English",
+        subSkills: {
+            "Pronunciation": ["A1", "A2", "B1", "B2", "C1", "C2"],
+            "Writing": ["A1", "A2", "B1", "B2", "C1", "C2"]
+        }
+    };
+    
+    // ======================== البيانات ========================
+    let normalProgress = JSON.parse(localStorage.getItem("normalProgress")) || {};
+    let specialProgress = JSON.parse(localStorage.getItem("specialProgress")) || {};
+    let resources = JSON.parse(localStorage.getItem("allResources")) || {};
     let tasks = JSON.parse(localStorage.getItem("learningTasks")) || [];
     
-    // تهيئة المهارات إذا كانت جديدة
-    allSkills.forEach(skill => {
-        if (progress[skill] === undefined) progress[skill] = 0;
-        if (resources[skill] === undefined) resources[skill] = [];
-    });
+    // تهيئة البيانات
+    function initData() {
+        basicSkills.forEach(skill => {
+            if (normalProgress[skill] === undefined) normalProgress[skill] = 0;
+        });
+        
+        if (!specialProgress[chessSkill.name]) specialProgress[chessSkill.name] = {};
+        for (let sub in chessSkill.subSkills) {
+            if (!specialProgress[chessSkill.name][sub]) {
+                specialProgress[chessSkill.name][sub] = chessSkill.subSkills[sub][0];
+            }
+        }
+        
+        if (!specialProgress[englishSkill.name]) specialProgress[englishSkill.name] = {};
+        for (let sub in englishSkill.subSkills) {
+            if (!specialProgress[englishSkill.name][sub]) {
+                specialProgress[englishSkill.name][sub] = englishSkill.subSkills[sub][0];
+            }
+        }
+    }
+    
+    // دوال الروابط
+    function getNormalResourceKey(skillName, level) {
+        return `normal_${skillName}_${level}`;
+    }
+    
+    function getSpecialResourceKey(skillName, subSkill, level) {
+        return `special_${skillName}_${subSkill}_${level}`;
+    }
+    
+    function addResource(skillName, level, subSkill = null) {
+        const inputId = `res-${skillName.replace(/\s/g, '')}-${subSkill || level}`;
+        const input = document.getElementById(inputId);
+        if (!input || !input.value.trim()) return;
+        
+        let url = input.value.trim();
+        if (!url.startsWith("http")) url = "https://" + url;
+        
+        let key;
+        if (subSkill !== null) {
+            key = getSpecialResourceKey(skillName, subSkill, level);
+        } else {
+            key = getNormalResourceKey(skillName, level);
+        }
+        
+        if (!resources[key]) resources[key] = [];
+        resources[key].push(url);
+        saveAll();
+        renderSkills();
+        updateStats();
+        input.value = "";
+    }
+    
+    // حذف رابط مع تنبيه
+    function deleteResourceWithConfirm(skillName, level, resourceIndex, subSkill = null) {
+        if (confirm("⚠️ هل أنت متأكد من حذف هذا الرابط نهائياً؟ لا يمكن التراجع عن هذا الإجراء.")) {
+            let key;
+            if (subSkill !== null) {
+                key = getSpecialResourceKey(skillName, subSkill, level);
+            } else {
+                key = getNormalResourceKey(skillName, level);
+            }
+            if (resources[key] && resources[key][resourceIndex]) {
+                resources[key].splice(resourceIndex, 1);
+                if (resources[key].length === 0) delete resources[key];
+                saveAll();
+                renderSkills();
+                updateStats();
+            }
+        }
+    }
+    
+    function deleteAllLinksForLevel(skillName, level, subSkill = null) {
+        let confirmMsg = subSkill 
+            ? `⚠️ هل أنت متأكد من حذف جميع الروابط الخاصة بـ "${skillName} - ${subSkill} - ${level}"؟`
+            : `⚠️ هل أنت متأكد من حذف جميع الروابط الخاصة بـ "${skillName} - مستوى ${level}%"؟`;
+        if (confirm(confirmMsg)) {
+            let key;
+            if (subSkill !== null) {
+                key = getSpecialResourceKey(skillName, subSkill, level);
+            } else {
+                key = getNormalResourceKey(skillName, level);
+            }
+            delete resources[key];
+            saveAll();
+            renderSkills();
+            updateStats();
+        }
+    }
+    
+    function resetNormalLevelProgress(skillName) {
+        if (confirm(`🔄 هل تريد إعادة ضبط "${skillName}" من مستوى ${normalProgress[skillName]}% إلى 0%؟`)) {
+            normalProgress[skillName] = 0;
+            saveAll();
+            renderSkills();
+            updateStats();
+        }
+    }
+    
+    function resetSubSkillProgress(skillName, subSkill, levelsArray) {
+        if (confirm(`🔄 هل تريد إعادة ضبط تقدم "${skillName} - ${subSkill}" إلى المستوى الأول (${levelsArray[0]})؟`)) {
+            specialProgress[skillName][subSkill] = levelsArray[0];
+            saveAll();
+            renderSkills();
+            updateStats();
+        }
+    }
     
     function saveAll() {
-        localStorage.setItem("skillProgressLevels", JSON.stringify(progress));
-        localStorage.setItem("skillResources", JSON.stringify(resources));
+        localStorage.setItem("normalProgress", JSON.stringify(normalProgress));
+        localStorage.setItem("specialProgress", JSON.stringify(specialProgress));
+        localStorage.setItem("allResources", JSON.stringify(resources));
         localStorage.setItem("learningTasks", JSON.stringify(tasks));
     }
     
+    // الإحصائيات
     function updateStats() {
-        const total = allSkills.length;
-        const avg = allSkills.reduce((sum, s) => sum + progress[s], 0) / total;
-        const avgPercent = Math.round(avg);
-        const completed100 = allSkills.filter(s => progress[s] === 100).length;
+        let totalSkillsCount = 0;
+        let totalPercentSum = 0;
+        
+        basicSkills.forEach(skill => {
+            totalPercentSum += normalProgress[skill] || 0;
+            totalSkillsCount++;
+        });
+        
+        let chessTotal = 0, chessCount = 0;
+        for (let sub in chessSkill.subSkills) {
+            const current = specialProgress[chessSkill.name]?.[sub];
+            const levels = chessSkill.subSkills[sub];
+            if (current && levels.includes(current)) {
+                const index = levels.indexOf(current);
+                chessTotal += (index / (levels.length - 1)) * 100;
+            }
+            chessCount++;
+        }
+        if (chessCount > 0) { totalPercentSum += chessTotal; totalSkillsCount++; }
+        
+        let engTotal = 0, engCount = 0;
+        for (let sub in englishSkill.subSkills) {
+            const current = specialProgress[englishSkill.name]?.[sub];
+            const levels = englishSkill.subSkills[sub];
+            if (current && levels.includes(current)) {
+                const index = levels.indexOf(current);
+                engTotal += (index / (levels.length - 1)) * 100;
+            }
+            engCount++;
+        }
+        if (engCount > 0) { totalPercentSum += engTotal; totalSkillsCount++; }
+        
+        const avgPercent = totalSkillsCount === 0 ? 0 : Math.round(totalPercentSum / totalSkillsCount);
+        
+        let completedCount = 0;
+        basicSkills.forEach(s => { if (normalProgress[s] === 100) completedCount++; });
+        
+        let chessCompleted = true;
+        for (let sub in chessSkill.subSkills) {
+            const levels = chessSkill.subSkills[sub];
+            if (specialProgress[chessSkill.name]?.[sub] !== levels[levels.length-1]) chessCompleted = false;
+        }
+        if (chessCompleted) completedCount++;
+        
+        let engCompleted = true;
+        for (let sub in englishSkill.subSkills) {
+            const levels = englishSkill.subSkills[sub];
+            if (specialProgress[englishSkill.name]?.[sub] !== levels[levels.length-1]) engCompleted = false;
+        }
+        if (engCompleted) completedCount++;
         
         document.getElementById("statsArea").innerHTML = `
             <div class="stat-box">📊 متوسط التقدم: ${avgPercent}%</div>
-            <div class="stat-box">🏆 مهارات كاملة (100%): ${completed100}/${total}</div>
+            <div class="stat-box">🏆 مهارات كاملة: ${completedCount}/${totalSkillsCount}</div>
             <div class="stat-box">✅ مهام منجزة: ${tasks.filter(t => t.done).length}/${tasks.length}</div>
         `;
     }
     
+    // ======================== عرض جميع المهارات ========================
     function renderSkills() {
         const grid = document.getElementById("skillsGrid");
         grid.innerHTML = "";
         
-        allSkills.forEach(skill => {
-            const currentProgress = progress[skill];
-            const skillResources = resources[skill] || [];
+        // 1. المواد العادية
+        basicSkills.forEach(skill => {
+            const currentProgress = normalProgress[skill] || 0;
             
-            const card = document.createElement("div");
-            card.className = "skill-card";
-            
-            // أزرار المستويات
-            const levels = [25, 50, 75, 100];
             let levelsHtml = "";
-            levels.forEach(level => {
+            normalLevels.forEach(level => {
                 let activeClass = "";
-                if (currentProgress === level) {
-                    if (level === 25) activeClass = "active-25";
-                    else if (level === 50) activeClass = "active-50";
-                    else if (level === 75) activeClass = "active-75";
-                    else if (level === 100) activeClass = "active-100";
+                if (currentProgress === level && level !== 0) {
+                    activeClass = "active-level";
+                } else if (level === 0 && currentProgress === 0) {
+                    // لا نضيف active-level للصفر لأن لونها مختلف
                 }
                 levelsHtml += `<button class="level-btn ${activeClass}" data-skill="${skill}" data-level="${level}">${level}%</button>`;
             });
             
-            // قائمة المصادر
+            let allLevelsResourcesHtml = "";
+            normalLevels.forEach(level => {
+                const levelKey = getNormalResourceKey(skill, level);
+                const levelResources = resources[levelKey] || [];
+                
+                let resourcesHtml = "";
+                if (levelResources.length > 0) {
+                    resourcesHtml = `<ul class="resources-list">`;
+                    levelResources.forEach((res, idx) => {
+                        let displayText = res.length > 35 ? res.substring(0, 35) + "..." : res;
+                        resourcesHtml += `
+                            <li class="resource-item">
+                                <a href="${res}" target="_blank" class="resource-link" title="${res}">📖 ${displayText}</a>
+                                <button class="delete-resource-normal" data-skill="${skill}" data-level="${level}" data-resource-idx="${idx}">✖</button>
+                            </li>
+                        `;
+                    });
+                    resourcesHtml += `</ul>`;
+                }
+                
+                allLevelsResourcesHtml += `
+                    <div class="normal-level-block">
+                        <div class="level-header">
+                            <span class="level-title">📌 مستوى ${level}%</span>
+                            <div class="level-buttons-group">
+                                <button class="level-control-btn reset-progress" data-skill-normal="${skill}">🔄 إعادة ضبط التقدم</button>
+                                <button class="level-control-btn reset-links" data-skill-normal-resetlinks="${skill}" data-level-links="${level}">🗑️ مسح روابط هذا المستوى</button>
+                            </div>
+                        </div>
+                        <div class="resource-section">
+                            <div class="resource-label">📚 أضف رابط فيديو/ملف لمستوى ${level}%:</div>
+                            <div class="resource-input-group">
+                                <input type="text" class="resource-input" id="res-${skill.replace(/\s/g, '')}-${level}" placeholder="https://...">
+                                <button class="add-resource-normal" data-skill="${skill}" data-level="${level}">➕ أضف</button>
+                            </div>
+                            ${resourcesHtml}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            const card = document.createElement("div");
+            card.className = "skill-card";
+            card.innerHTML = `
+                <div class="skill-header">
+                    <span class="skill-name">${skill}</span>
+                </div>
+                <div class="level-buttons" style="margin-bottom:15px;">
+                    ${levelsHtml}
+                </div>
+                ${allLevelsResourcesHtml}
+            `;
+            grid.appendChild(card);
+        });
+        
+        // 2. مهارة الشطرنج
+        renderSpecialSkill(chessSkill, grid);
+        
+        // 3. مهارة الإنجليزية
+        renderSpecialSkill(englishSkill, grid);
+        
+        // ========== ربط الأحداث ==========
+        // أزرار تغيير المستوى للمواد العادية
+        document.querySelectorAll(".level-btn[data-skill]").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const skill = btn.getAttribute("data-skill");
+                const level = parseInt(btn.getAttribute("data-level"));
+                if (skill && !isNaN(level)) {
+                    normalProgress[skill] = level;
+                    saveAll();
+                    renderSkills();
+                    updateStats();
+                }
+            });
+        });
+        
+        // إعادة ضبط التقدم للمواد العادية
+        document.querySelectorAll(".reset-progress[data-skill-normal]").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const skill = btn.getAttribute("data-skill-normal");
+                resetNormalLevelProgress(skill);
+            });
+        });
+        
+        // مسح روابط مستوى معين (مواد عادية)
+        document.querySelectorAll(".reset-links[data-skill-normal-resetlinks]").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const skill = btn.getAttribute("data-skill-normal-resetlinks");
+                const level = parseInt(btn.getAttribute("data-level-links"));
+                deleteAllLinksForLevel(skill, level);
+            });
+        });
+        
+        // إضافة رابط (مواد عادية)
+        document.querySelectorAll(".add-resource-normal").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const skill = btn.getAttribute("data-skill");
+                const level = parseInt(btn.getAttribute("data-level"));
+                addResource(skill, level);
+            });
+        });
+        
+        // حذف رابط فردي (مواد عادية) - مع تنبيه
+        document.querySelectorAll(".delete-resource-normal").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const skill = btn.getAttribute("data-skill");
+                const level = parseInt(btn.getAttribute("data-level"));
+                const idx = parseInt(btn.getAttribute("data-resource-idx"));
+                deleteResourceWithConfirm(skill, level, idx);
+            });
+        });
+    }
+    
+    // عرض المهارات الخاصة (الشطرنج والإنجليزية)
+    function renderSpecialSkill(skillObj, grid) {
+        const skillName = skillObj.name;
+        const subSkills = skillObj.subSkills;
+        
+        const card = document.createElement("div");
+        card.className = "skill-card";
+        let innerHtml = `<div class="skill-header"><span class="skill-name">${skillName}</span></div>`;
+        
+        for (let [subName, levelsArray] of Object.entries(subSkills)) {
+            const currentLevel = specialProgress[skillName]?.[subName] || levelsArray[0];
+            
+            let levelsHtml = "";
+            levelsArray.forEach(level => {
+                const activeClass = (currentLevel === level) ? "active-level" : "";
+                levelsHtml += `<button class="level-btn special-level" data-skill-name="${skillName}" data-sub-skill="${subName}" data-level="${level}">${level}</button>`;
+            });
+            
+            const resourceKey = getSpecialResourceKey(skillName, subName, currentLevel);
+            const levelResources = resources[resourceKey] || [];
             let resourcesHtml = "";
-            if (skillResources.length > 0) {
+            if (levelResources.length > 0) {
                 resourcesHtml = `<ul class="resources-list">`;
-                skillResources.forEach((res, idx) => {
-                    let displayText = res.length > 40 ? res.substring(0, 40) + "..." : res;
+                levelResources.forEach((res, idx) => {
+                    let displayText = res.length > 35 ? res.substring(0, 35) + "..." : res;
                     resourcesHtml += `
                         <li class="resource-item">
                             <a href="${res}" target="_blank" class="resource-link" title="${res}">📖 ${displayText}</a>
-                            <button class="delete-resource" data-skill="${skill}" data-resource-idx="${idx}">✖</button>
+                            <button class="delete-resource-special" data-skill-name="${skillName}" data-sub-skill="${subName}" data-level="${currentLevel}" data-resource-idx="${idx}">✖</button>
                         </li>
                     `;
                 });
                 resourcesHtml += `</ul>`;
             }
             
-            card.innerHTML = `
-                <div class="skill-header">
-                    <span class="skill-name">${skill}</span>
-                    <button class="reset-skill-btn" data-skill="${skill}">🔄 إعادة تعيين المهارة</button>
-                </div>
-                <div class="progress-container">
-                    <div class="progress-percent">${currentProgress}%</div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width: ${currentProgress}%;"></div>
+            innerHtml += `
+                <div class="sub-skill-block">
+                    <div class="sub-skill-title">
+                        <span>📌 ${subName}</span>
+                        <div class="sub-skill-buttons">
+                            <button class="level-control-btn reset-progress reset-progress-special" data-skill-name="${skillName}" data-sub-skill="${subName}">🔄 إعادة ضبط التقدم</button>
+                            <button class="level-control-btn reset-links reset-links-special" data-skill-name="${skillName}" data-sub-skill="${subName}" data-level="${currentLevel}">🗑️ مسح روابط هذا المستوى</button>
+                        </div>
                     </div>
-                </div>
-                <div class="levels-buttons">
-                    ${levelsHtml}
-                </div>
-                <div class="resource-section">
-                    <div class="resource-label">📚 أضف كتاب، فيديو، أو صفحة ويب للتعلم:</div>
-                    <div class="resource-input-group">
-                        <input type="text" class="resource-input" id="resource-input-${skill.replace(/\s/g, '')}" placeholder="https://... أو عنوان المصدر">
-                        <button class="add-resource-btn" data-skill="${skill}">➕ أضف</button>
+                    <div class="level-buttons">
+                        ${levelsHtml}
                     </div>
-                    ${resourcesHtml}
+                    <div class="resource-section">
+                        <div class="resource-label">📚 أضف رابط فيديو/ملف لهذا المستوى (${currentLevel}):</div>
+                        <div class="resource-input-group">
+                            <input type="text" class="resource-input" id="res-${skillName.replace(/\s/g, '')}-${subName}" placeholder="https://...">
+                            <button class="add-resource-special" data-skill-name="${skillName}" data-sub-skill="${subName}" data-level="${currentLevel}">➕ أضف</button>
+                        </div>
+                        ${resourcesHtml}
+                    </div>
                 </div>
             `;
-            grid.appendChild(card);
-        });
+        }
+        innerHtml += `</div>`;
+        card.innerHTML = innerHtml;
+        grid.appendChild(card);
         
-        // أحداث أزرار المستويات
-        document.querySelectorAll(".level-btn").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                const skill = btn.getAttribute("data-skill");
-                const level = parseInt(btn.getAttribute("data-level"));
-                if (skill && !isNaN(level)) {
-                    progress[skill] = level;
-                    saveAll();
-                    renderSkills();
-                    updateStats();
-                }
-            });
-        });
-        
-        // أحداث أزرار إعادة تعيين المهارة
-        document.querySelectorAll(".reset-skill-btn").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                const skill = btn.getAttribute("data-skill");
-                if (confirm(`هل تريد إعادة تعيين "${skill}" إلى 0% وحذف جميع مصادرها؟`)) {
-                    progress[skill] = 0;
-                    resources[skill] = [];
-                    saveAll();
-                    renderSkills();
-                    updateStats();
-                }
-            });
-        });
-        
-        // أحداث أزرار إضافة المصادر
-        document.querySelectorAll(".add-resource-btn").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                const skill = btn.getAttribute("data-skill");
-                const inputId = `resource-input-${skill.replace(/\s/g, '')}`;
-                const input = document.getElementById(inputId);
-                if (input && input.value.trim() !== "") {
-                    let url = input.value.trim();
-                    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-                        url = "https://" + url;
+        // ربط الأحداث للمهارات الخاصة
+        setTimeout(() => {
+            // أزرار تغيير المستوى
+            document.querySelectorAll(`.special-level[data-skill-name="${skillName}"]`).forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const sName = btn.getAttribute("data-skill-name");
+                    const sub = btn.getAttribute("data-sub-skill");
+                    const lvl = btn.getAttribute("data-level");
+                    if (sName && sub && lvl) {
+                        specialProgress[sName][sub] = lvl;
+                        saveAll();
+                        renderSkills();
+                        updateStats();
                     }
-                    resources[skill].push(url);
-                    saveAll();
-                    renderSkills();
-                    updateStats();
-                    input.value = "";
-                }
+                });
             });
-        });
-        
-        // أحداث حذف المصادر
-        document.querySelectorAll(".delete-resource").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                const skill = btn.getAttribute("data-skill");
-                const idx = parseInt(btn.getAttribute("data-resource-idx"));
-                if (skill && !isNaN(idx)) {
-                    resources[skill].splice(idx, 1);
-                    saveAll();
-                    renderSkills();
-                    updateStats();
-                }
+            
+            // إعادة ضبط التقدم
+            document.querySelectorAll(`.reset-progress-special[data-skill-name="${skillName}"]`).forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const sName = btn.getAttribute("data-skill-name");
+                    const sub = btn.getAttribute("data-sub-skill");
+                    const levelsArr = skillObj.subSkills[sub];
+                    if (sName && sub && levelsArr) {
+                        resetSubSkillProgress(sName, sub, levelsArr);
+                    }
+                });
             });
-        });
+            
+            // مسح روابط المستوى
+            document.querySelectorAll(`.reset-links-special[data-skill-name="${skillName}"]`).forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const sName = btn.getAttribute("data-skill-name");
+                    const sub = btn.getAttribute("data-sub-skill");
+                    const lvl = btn.getAttribute("data-level");
+                    if (sName && sub && lvl) {
+                        deleteAllLinksForLevel(sName, lvl, sub);
+                    }
+                });
+            });
+            
+            // إضافة رابط
+            document.querySelectorAll(`.add-resource-special[data-skill-name="${skillName}"]`).forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const sName = btn.getAttribute("data-skill-name");
+                    const sub = btn.getAttribute("data-sub-skill");
+                    const lvl = btn.getAttribute("data-level");
+                    addResource(sName, lvl, sub);
+                });
+            });
+            
+            // حذف رابط فردي مع تنبيه
+            document.querySelectorAll(`.delete-resource-special[data-skill-name="${skillName}"]`).forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const sName = btn.getAttribute("data-skill-name");
+                    const sub = btn.getAttribute("data-sub-skill");
+                    const lvl = btn.getAttribute("data-level");
+                    const idx = parseInt(btn.getAttribute("data-resource-idx"));
+                    deleteResourceWithConfirm(sName, lvl, idx, sub);
+                });
+            });
+        }, 50);
     }
     
-    // مهام اليوم
+    // ========== المهام ==========
     function renderTasks() {
         const taskUl = document.getElementById("taskList");
         taskUl.innerHTML = "";
@@ -297,17 +592,19 @@
         document.querySelectorAll(".deleteTask").forEach(btn => {
             btn.addEventListener("click", (e) => {
                 const idx = btn.getAttribute("data-idx");
-                tasks.splice(idx, 1);
-                saveAll();
-                renderTasks();
-                updateStats();
+                if (confirm("⚠️ هل تريد حذف هذه المهمة نهائياً؟")) {
+                    tasks.splice(idx, 1);
+                    saveAll();
+                    renderTasks();
+                    updateStats();
+                }
             });
         });
     }
     
     document.getElementById("addTask").addEventListener("click", () => {
         const input = document.getElementById("taskName");
-        if(input.value.trim() === "") return;
+        if (input.value.trim() === "") return;
         tasks.push({ name: input.value.trim(), done: false });
         saveAll();
         renderTasks();
@@ -316,11 +613,15 @@
     });
     
     document.getElementById("resetAllBtn").addEventListener("click", () => {
-        if(confirm("⚠️ تحذير: سيتم حذف كل تقدم المهارات، جميع المصادر، وجميع المهام. هل أنت متأكد؟")) {
-            allSkills.forEach(skill => {
-                progress[skill] = 0;
-                resources[skill] = [];
-            });
+        if (confirm("⚠️ تحذير نهائي: سيتم حذف كل تقدم المهارات، جميع المصادر، وجميع المهام. هل أنت متأكد؟")) {
+            basicSkills.forEach(skill => { normalProgress[skill] = 0; });
+            for (let sub in chessSkill.subSkills) {
+                specialProgress[chessSkill.name][sub] = chessSkill.subSkills[sub][0];
+            }
+            for (let sub in englishSkill.subSkills) {
+                specialProgress[englishSkill.name][sub] = englishSkill.subSkills[sub][0];
+            }
+            resources = {};
             tasks = [];
             saveAll();
             renderSkills();
@@ -329,7 +630,7 @@
         }
     });
     
-    // التهيئة
+    initData();
     renderSkills();
     renderTasks();
     updateStats();
