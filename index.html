@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>SmartBoard Pro - إشعارات المتصفح</title>
+    <title>SmartBoard Pro - إنذار غواصات</title>
     <style>
         * {
             margin: 0;
@@ -42,6 +42,15 @@
             display: none !important;
         }
 
+        @keyframes tabFlash {
+            0% { background-color: transparent; }
+            50% { background-color: rgba(239, 68, 68, 0.4); }
+            100% { background-color: transparent; }
+        }
+        body.flash-tab {
+            animation: tabFlash 0.2s ease-in-out 8;
+        }
+
         .mode-buttons {
             display: flex;
             gap: 10px;
@@ -74,15 +83,65 @@
         .notification-settings {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
             background: #1a0a2e;
-            padding: 5px 12px;
+            padding: 5px 15px;
             border-radius: 40px;
+            flex-wrap: wrap;
         }
 
         .notification-settings label {
             font-size: 0.7rem;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .test-notif-btn, .activate-sound-btn {
+            background: #fbbf24;
+            color: #1a0a2e;
+            border: none;
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .activate-sound-btn {
+            background: #10b981;
+            color: white;
+        }
+
+        .sound-activated {
+            background: #10b981;
+            animation: pulse 1s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .stop-alert-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            animation: alertPulse 0.8s infinite;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.9);
+        }
+
+        @keyframes alertPulse {
+            0% { transform: scale(1); background: #ef4444; }
+            50% { transform: scale(1.1); background: #dc2626; }
+            100% { transform: scale(1); background: #ef4444; }
         }
 
         .competition-stats {
@@ -137,22 +196,6 @@
         @keyframes popIn {
             from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
             to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-
-        .notification-log {
-            background: #1a0a2e;
-            border-radius: 16px;
-            padding: 10px;
-            margin-top: 10px;
-            max-height: 100px;
-            overflow-y: auto;
-        }
-
-        .log-item {
-            font-size: 0.7rem;
-            padding: 4px 8px;
-            border-bottom: 1px solid #3a2a5e;
-            color: #c0a0e0;
         }
 
         .timer-settings {
@@ -408,50 +451,52 @@
         .sub-skill-title { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; font-weight: bold; font-size: 0.85rem; color: #fbbf24; }
         h2, h3 { color: #fbbf24; }
 
-        .achievement-toast {
+        .stop-alert-container {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, #1a0a2e, #2d1a3e);
-            border-right: 5px solid #fbbf24;
-            border-radius: 16px;
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            bottom: 20px;
+            left: 20px;
             z-index: 1000;
-            animation: slideIn 0.5s ease forwards;
         }
 
-        @keyframes slideIn {
+        .pre-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #fbbf24;
+            color: #1a0a2e;
+            padding: 10px 20px;
+            border-radius: 60px;
+            font-weight: bold;
+            animation: slideInRight 0.5s ease;
+            z-index: 1000;
+        }
+
+        @keyframes slideInRight {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
 
-        .achievement-toast.fade-out {
-            animation: fadeOut 0.5s ease forwards;
+        .sound-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1a0a2e;
+            padding: 5px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            border: 1px solid #fbbf24;
+            z-index: 1000;
         }
-
-        @keyframes fadeOut {
-            to { opacity: 0; transform: translateX(100%); }
-        }
-
-        .empty-message { text-align: center; color: #aaa; padding: 10px; font-size: 0.75rem; }
-        .notification-log { max-height: 80px; overflow-y: auto; margin-top: 8px; }
-        .log-item { font-size: 0.65rem; padding: 3px 5px; border-bottom: 1px solid #3a2a5e; color: #c0a0e0; }
     </style>
 </head>
 <body>
 <div class="dashboard">
-    <!-- Mode Buttons + Notification Settings -->
     <div class="mode-buttons">
         <div class="notification-settings">
-            <label>
-                <input type="checkbox" id="enableNotifications" checked> 🔔 إشعارات المتصفح
-            </label>
-            <label>
-                <input type="checkbox" id="enableSound"> 🔊 صوت
-            </label>
+            <label><input type="checkbox" id="enableNotifications" checked> 🔔 إشعارات المتصفح</label>
+            <label><input type="checkbox" id="enableSound" checked> 🔊 صوت الإنذار</label>
+            <button id="activateSoundBtn" class="activate-sound-btn">🔊 تفعيل الصوت أولاً</button>
+            <button id="testNotificationBtn" class="test-notif-btn">🧪 اختبار الإنذار</button>
         </div>
         <button id="focusModeBtn" class="mode-btn">🧘 وضع التركيز العميق</button>
         <button id="competitionModeBtn" class="mode-btn">⚔️ وضع التنافس</button>
@@ -463,19 +508,14 @@
         <div class="line3">“My magic is never giving up”</div>
     </div>
 
-    <!-- Competition Panel -->
     <div id="competitionPanel" style="display: none;">
         <div class="competition-stats">
-            <div class="comp-header">
-                <span>⚔️ تحدى نفسك ⚔️</span>
-                <span id="compPeriod">هذا الأسبوع vs الأسبوع الماضي</span>
-            </div>
+            <div class="comp-header"><span>⚔️ تحدى نفسك ⚔️</span><span id="compPeriod">هذا الأسبوع vs الأسبوع الماضي</span></div>
             <div id="competitionContent"></div>
             <div id="weeklyGoalContent" style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #7c3aed;"></div>
         </div>
     </div>
 
-    <!-- Timer + Mission Center -->
     <div class="tools-container">
         <div class="timer-card">
             <div style="text-align: center; margin-bottom: 8px;">⏱️ جلسة تركيز</div>
@@ -502,32 +542,17 @@
                     <button id="quickAddTaskBtn">➕ إضافة</button>
                 </div>
             </div>
-            
             <div class="mission-section">
                 <div class="section-title">👤 مهامي الشخصية</div>
-                <ul class="mission-list" id="personalTasksList">
-                    <li class="empty-message">لا توجد مهام شخصية</li>
-                </ul>
+                <ul class="mission-list" id="personalTasksList"><li class="empty-message">لا توجد مهام شخصية</li></ul>
             </div>
-
             <div class="mission-section">
                 <div class="section-title">🤖 مهام مقترحة (من مهاراتك المهملة)</div>
-                <ul class="mission-list" id="suggestedTasksList">
-                    <li class="empty-message">✨ لا توجد مهارات مهملة</li>
-                </ul>
-            </div>
-
-            <!-- سجل الإشعارات -->
-            <div class="mission-section">
-                <div class="section-title">📋 سجل الإشعارات</div>
-                <div class="notification-log" id="notificationLog">
-                    <div class="log-item">✨ مرحباً بك! سيتم تسجيل الإشعارات هنا</div>
-                </div>
+                <ul class="mission-list" id="suggestedTasksList"><li class="empty-message">✨ لا توجد مهارات مهملة</li></ul>
             </div>
         </div>
     </div>
 
-    <!-- XP Card -->
     <div class="xp-card" id="xpCard">
         <div class="level-info">
             <div class="rank-icon" id="rankIcon">🚫</div>
@@ -537,13 +562,8 @@
             </div>
         </div>
         <div class="xp-stats">
-            <div class="xp-numbers">
-                <span>🗡️ <span id="currentXP">0</span> XP</span>
-                <span>🎯 <span id="nextLevelXP">800</span> XP</span>
-            </div>
-            <div class="xp-bar-container">
-                <div class="xp-bar-fill" id="xpBarFill" style="width: 0%;"></div>
-            </div>
+            <div class="xp-numbers"><span>🗡️ <span id="currentXP">0</span> XP</span><span>🎯 <span id="nextLevelXP">800</span> XP</span></div>
+            <div class="xp-bar-container"><div class="xp-bar-fill" id="xpBarFill" style="width: 0%;"></div></div>
             <div class="next-level" id="nextLevelText">📈 التالي: الساقط (800 XP)</div>
         </div>
     </div>
@@ -560,88 +580,220 @@
         </div>
         <button id="resetAllBtn" style="background:#6d28d9; margin-top:15px;">🔄 إعادة تعيين الكل</button>
     </div>
-    <footer>⚡ نظام الترقية - إشعارات المتصفح تنبهك حتى لو كنت في نافذة أخرى ⚡</footer>
+    <footer>🚨 إنذار غواصات - صوت قوي جداً (اضغط "تفعيل الصوت أولاً" قبل البدء) 🚨</footer>
 </div>
+
+<div class="stop-alert-container" id="stopAlertContainer" style="display: none;">
+    <button id="stopAlertBtn" class="stop-alert-btn">🔇 إسكات الإنذار</button>
+</div>
+
+<div class="sound-status" id="soundStatus">🔇 الصوت: غير مفعل</div>
 
 <script>
     // =====================================================
-    // NOTIFICATION SYSTEM
+    // نظام الإنذار القوي (إنذار غواصات)
     // =====================================================
     let notificationPermissionGranted = false;
-    let notificationLog = JSON.parse(localStorage.getItem("notificationLog")) || ["✨ مرحباً بك! سيتم تسجيل الإشعارات هنا"];
+    let alertInterval = null;
+    let isAlertActive = false;
+    let originalTitle = document.title;
+    let preAlertShown = false;
+    let audioContext = null;
+    let soundActivated = false;
     
-    function addToLog(message) {
-        const time = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute:'2-digit' });
-        notificationLog.unshift(`[${time}] ${message}`);
-        if (notificationLog.length > 20) notificationLog.pop();
-        localStorage.setItem("notificationLog", JSON.stringify(notificationLog));
-        updateNotificationLog();
+    // تفعيل قناة الصوت (لازم لـ Chrome)
+    function activateAudioContext() {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+        soundActivated = true;
+        document.getElementById('soundStatus').innerHTML = '🔊 الصوت: مفعل ✅';
+        document.getElementById('soundStatus').style.background = '#10b981';
+        
+        // تشغيل صوت اختبار قصير
+        playSubmarineAlert(true);
+        
+        setTimeout(() => {
+            document.getElementById('soundStatus').style.background = '#1a0a2e';
+        }, 2000);
     }
     
-    function updateNotificationLog() {
-        const logDiv = document.getElementById('notificationLog');
-        if (logDiv) {
-            logDiv.innerHTML = notificationLog.map(msg => `<div class="log-item">📋 ${msg}</div>`).join('');
+    // صوت إنذار الغواصات (3 نغمات متصاعدة)
+    function playSubmarineAlert(isTest = false) {
+        if (!document.getElementById('enableSound')?.checked) return;
+        if (!soundActivated && !isTest) {
+            console.log("⚠️ الصوت غير مفعل. اضغط 'تفعيل الصوت أولاً'");
+            return;
         }
+        
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+        
+        try {
+            const now = audioContext.currentTime;
+            const frequencies = [1000, 1200, 1400, 1000, 1200, 1400];
+            const durations = [0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
+            let time = 0;
+            
+            for (let i = 0; i < frequencies.length; i++) {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.frequency.value = frequencies[i];
+                gainNode.gain.value = 1.0; // أعلى جهارة
+                
+                oscillator.start(now + time);
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, now + time + durations[i]);
+                oscillator.stop(now + time + durations[i]);
+                
+                time += durations[i] + 0.05;
+            }
+        } catch(e) {
+            console.log("Audio error:", e);
+        }
+    }
+    
+    // إنذار متكرر (كل 2 ثانية)
+    function startContinuousAlert() {
+        if (!document.getElementById('enableSound')?.checked) return;
+        if (!soundActivated) {
+            console.log("⚠️ الصوت غير مفعل. اضغط 'تفعيل الصوت أولاً'");
+            return;
+        }
+        
+        isAlertActive = true;
+        const stopContainer = document.getElementById('stopAlertContainer');
+        stopContainer.style.display = 'block';
+        
+        if (alertInterval) clearInterval(alertInterval);
+        
+        playSubmarineAlert();
+        
+        alertInterval = setInterval(() => {
+            if (!isAlertActive) {
+                clearInterval(alertInterval);
+                alertInterval = null;
+                stopContainer.style.display = 'none';
+                return;
+            }
+            playSubmarineAlert();
+        }, 2000);
+    }
+    
+    function stopAlert() {
+        isAlertActive = false;
+        if (alertInterval) {
+            clearInterval(alertInterval);
+            alertInterval = null;
+        }
+        document.getElementById('stopAlertContainer').style.display = 'none';
+        preAlertShown = false;
+    }
+    
+    function flashPageTitle() {
+        for (let i = 0; i < 8; i++) {
+            setTimeout(() => {
+                document.title = i % 2 === 0 ? '🔴🚨 إنذار! انتهت الجلسة! 🚨🔴' : originalTitle;
+            }, i * 200);
+        }
+        setTimeout(() => { document.title = originalTitle; }, 2000);
+        document.body.classList.add('flash-tab');
+        setTimeout(() => document.body.classList.remove('flash-tab'), 1600);
+    }
+    
+    function sendNotification(title, body, icon = '🧘') {
+        if (!document.getElementById('enableNotifications')?.checked) return;
+        if (notificationPermissionGranted && 'Notification' in window) {
+            const notification = new Notification(`📚 ${title}`, {
+                body: body,
+                icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ctext y=".9em" font-size="90" x=".2em"%3E🚨%3C/text%3E%3C/svg%3E',
+                silent: false,
+                requireInteraction: true
+            });
+            setTimeout(() => notification.close(), 15000);
+        }
+    }
+    
+    function triggerStrongAlert(title, body, icon = '🚨') {
+        startContinuousAlert();
+        flashPageTitle();
+        sendNotification(title, body, icon);
+    }
+    
+    function showPreAlertMessage() {
+        if (preAlertShown) return;
+        preAlertShown = true;
+        
+        const preAlert = document.createElement('div');
+        preAlert.className = 'pre-alert';
+        preAlert.innerHTML = '🚨 10 ثوانٍ متبقية على نهاية الجلسة! 🚨';
+        document.body.appendChild(preAlert);
+        
+        // تنبيه خفيف
+        if (soundActivated && audioContext) {
+            try {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.value = 660;
+                gain.gain.value = 0.5;
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.3);
+                osc.stop(audioContext.currentTime + 0.3);
+            } catch(e) {}
+        }
+        
+        setTimeout(() => preAlert.remove(), 3000);
     }
     
     function requestNotificationPermission() {
         if ('Notification' in window) {
             Notification.requestPermission().then(permission => {
                 notificationPermissionGranted = permission === 'granted';
-                if (notificationPermissionGranted) {
-                    addToLog("🔔 تم تفعيل إشعارات المتصفح");
-                } else {
-                    addToLog("⚠️ لم يتم تفعيل إشعارات المتصفح");
-                }
             });
         }
     }
     
-    function sendNotification(title, body, icon = '🧘') {
-        const enabled = document.getElementById('enableNotifications')?.checked;
-        const soundEnabled = document.getElementById('enableSound')?.checked;
-        
-        // تسجيل في السجل
-        addToLog(`${icon} ${title} - ${body}`);
-        
-        // إشعار المتصفح
-        if (enabled && notificationPermissionGranted && 'Notification' in window) {
-            const notification = new Notification(`📚 ${title}`, {
-                body: body,
-                icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ctext y=".9em" font-size="90" x=".2em"%3E🧘%3C/text%3E%3C/svg%3E',
-                silent: !soundEnabled
-            });
-            setTimeout(() => notification.close(), 5000);
-        }
-        
-        // تغيير عنوان الصفحة
-        const originalTitle = document.title;
-        document.title = `✅ ${title} - SmartBoard`;
-        setTimeout(() => { document.title = originalTitle; }, 5000);
-        
-        // صوت بسيط (اختياري)
-        if (soundEnabled) {
-            try {
-                const audio = new Audio('data:audio/wav;base64,U3RlYWx0aCBzb3VuZA==');
-                audio.play().catch(e => console.log('Audio not supported'));
-            } catch(e) {}
-        }
-    }
+    // أزرار التحكم
+    document.getElementById('activateSoundBtn')?.addEventListener('click', () => {
+        activateAudioContext();
+        const btn = document.getElementById('activateSoundBtn');
+        btn.classList.add('sound-activated');
+        setTimeout(() => btn.classList.remove('sound-activated'), 500);
+    });
     
-    // طلب الإذن عند تحميل الصفحة
+    document.getElementById('stopAlertBtn')?.addEventListener('click', stopAlert);
+    
+    document.getElementById('testNotificationBtn')?.addEventListener('click', () => {
+        if (!soundActivated) {
+            alert("⚠️ يرجى الضغط على 'تفعيل الصوت أولاً' قبل اختبار الإنذار");
+            activateAudioContext();
+        }
+        triggerStrongAlert("🧪 اختبار الإنذار", "إنذار غواصات قوي جداً!", "🚨");
+    });
+    
     window.addEventListener('load', () => {
         requestNotificationPermission();
-        updateNotificationLog();
+        originalTitle = document.title;
     });
 
     // =====================================================
-    // TIMER SYSTEM WITH NOTIFICATIONS
+    // TIMER SYSTEM
     // =====================================================
     let timerSeconds = 25 * 60;
     let timerInterval = null;
     let timerRunning = false;
     let currentPreset = 25;
+    let preAlertTriggered = false;
     const focusBonusXP = 25;
     const timerDisplay = document.getElementById('timerDisplay');
 
@@ -649,6 +801,14 @@
         const minutes = Math.floor(timerSeconds / 60);
         const seconds = timerSeconds % 60;
         timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        if (timerRunning) {
+            document.title = `(${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}) SmartBoard`;
+        }
+        
+        if (timerRunning && timerSeconds <= 10 && timerSeconds > 0 && !preAlertTriggered) {
+            preAlertTriggered = true;
+            showPreAlertMessage();
+        }
     }
 
     function timerComplete() {
@@ -657,34 +817,21 @@
         
         let totalXP = 50;
         let focusModeActive = document.body.classList.contains('focus-mode');
-        if (focusModeActive) {
-            totalXP += focusBonusXP;
-        }
+        if (focusModeActive) totalXP += focusBonusXP;
         
         userXP += totalXP;
         localStorage.setItem("userXP", userXP);
         refreshXP();
         
-        // إرسال إشعار قوي
-        const focusBonusText = focusModeActive ? ` (+${focusBonusXP} XP إضافي لوضع التركيز)` : '';
-        sendNotification(
-            "⏰ جلسة تركيز مكتملة!",
-            `🎁 حصلت على +${totalXP} XP${focusBonusText}`,
-            "🏆"
-        );
+        const focusBonusText = focusModeActive ? ` (+${focusBonusXP} XP إضافي)` : '';
+        triggerStrongAlert("⏰ جلسة تركيز مكتملة!", `🎁 +${totalXP} XP${focusBonusText}`, "🏆");
         
-        // رسالة داخلية
-        showAchievementToast("⏱️ أكملت جلسة تركيز!", `+${totalXP} XP`);
-        
-        // تحديث إحصائيات التنافس
-        if (focusModeActive) {
-            updateWeeklyStats(0, 0, 1);
-        }
+        if (focusModeActive) updateWeeklyStats(0, 0, 1);
         
         timerSeconds = currentPreset * 60;
         updateTimerDisplay();
+        preAlertTriggered = false;
         
-        // العودة من وضع التركيز
         if (focusModeActive) {
             setTimeout(() => {
                 document.body.classList.remove('focus-mode');
@@ -693,11 +840,19 @@
                 sendNotification("🧘 الخروج من وضع التركيز", "تم العودة إلى الوضع العادي", "👋");
             }, 2000);
         }
+        
+        document.title = originalTitle;
     }
 
     function startTimer() {
+        if (!soundActivated) {
+            if (confirm("⚠️ الصوت غير مفعل! هل تريد تفعيل الصوت أولاً؟")) {
+                activateAudioContext();
+            }
+        }
         if (timerInterval) clearInterval(timerInterval);
         timerRunning = true;
+        preAlertTriggered = false;
         sendNotification("▶️ بدء جلسة تركيز", `المدة: ${currentPreset} دقيقة`, "⏱️");
         timerInterval = setInterval(() => {
             if (timerSeconds <= 1) timerComplete();
@@ -706,8 +861,8 @@
     }
 
     document.getElementById('timerStartBtn').addEventListener('click', () => { if (!timerRunning) startTimer(); });
-    document.getElementById('timerPauseBtn').addEventListener('click', () => { if (timerInterval) clearInterval(timerInterval); timerRunning = false; });
-    document.getElementById('timerResetBtn').addEventListener('click', () => { if (timerInterval) clearInterval(timerInterval); timerRunning = false; timerSeconds = currentPreset * 60; updateTimerDisplay(); });
+    document.getElementById('timerPauseBtn').addEventListener('click', () => { if (timerInterval) clearInterval(timerInterval); timerRunning = false; document.title = originalTitle; });
+    document.getElementById('timerResetBtn').addEventListener('click', () => { if (timerInterval) clearInterval(timerInterval); timerRunning = false; timerSeconds = currentPreset * 60; updateTimerDisplay(); document.title = originalTitle; preAlertTriggered = false; });
 
     document.querySelectorAll('.timer-preset').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -721,7 +876,7 @@
     document.querySelector('.timer-preset[data-time="25"]').classList.add('active');
 
     // =====================================================
-    // FOCUS MODE
+    // FOCUS MODE & COMPETITION (مختصر)
     // =====================================================
     const focusModeBtn = document.getElementById('focusModeBtn');
     focusModeBtn.addEventListener('click', () => {
@@ -736,9 +891,6 @@
         }
     });
 
-    // =====================================================
-    // COMPETITION MODE (مختصر)
-    // =====================================================
     let weeklyStats = JSON.parse(localStorage.getItem("weeklyStats")) || { xp: 0, tasks: 0, focusSessions: 0, week: getWeekNumber(), month: new Date().getMonth() };
     let previousWeeklyStats = JSON.parse(localStorage.getItem("previousWeeklyStats")) || null;
     let previousMonthlyStats = JSON.parse(localStorage.getItem("previousMonthlyStats")) || null;
@@ -784,17 +936,6 @@
             sendNotification("🏆 رقم قياسي جديد!", `أنهيت ${personalBest.tasks} مهمة في أسبوع`, "⭐");
         }
         localStorage.setItem("personalBest", JSON.stringify(personalBest));
-    }
-
-    function showPersonalBest(message) {
-        const toast = document.createElement('div');
-        toast.className = 'personal-best-toast';
-        toast.innerHTML = message;
-        document.body.appendChild(toast);
-        setTimeout(() => {
-            toast.classList.add('fade-out');
-            setTimeout(() => toast.remove(), 500);
-        }, 3000);
     }
 
     function updateMonthlyStats() {
@@ -850,7 +991,7 @@
     });
 
     // =====================================================
-    // TASKS SYSTEM (اختصار)
+    // TASKS SYSTEM (مختصر)
     // =====================================================
     let personalTasks = JSON.parse(localStorage.getItem("personalTasks")) || [];
     let lastUpdateDates = JSON.parse(localStorage.getItem("lastUpdateDates")) || {};
@@ -895,7 +1036,6 @@
         personalTasks.push({ name: taskName.trim(), completed: false, addedAt: Date.now() });
         saveAll();
         renderMissionCenter();
-        addToLog(`➕ أضفت مهمة جديدة: "${taskName}"`);
     }
 
     function togglePersonalTask(index) {
@@ -912,7 +1052,6 @@
     }
 
     function deletePersonalTask(index) {
-        addToLog(`🗑️ حذفت مهمة: "${personalTasks[index].name}"`);
         personalTasks.splice(index, 1);
         saveAll();
         renderMissionCenter();
@@ -961,16 +1100,8 @@
         document.querySelectorAll('[data-suggest-skill]').forEach(btn => btn.addEventListener('click', (e) => { completeSuggestedTask(btn.getAttribute('data-suggest-skill'), btn.getAttribute('data-suggest-sub')); }));
     }
 
-    function showAchievementToast(title, message) {
-        const toast = document.createElement('div');
-        toast.className = 'achievement-toast';
-        toast.innerHTML = `<span style="font-size:1.5rem;">🏆</span><div><div style="font-weight:bold;">${title}</div><div>${message}</div></div>`;
-        document.body.appendChild(toast);
-        setTimeout(() => { toast.classList.add('fade-out'); setTimeout(() => toast.remove(), 500); }, 3000);
-    }
-
     // =====================================================
-    // RANKS & SKILLS (full - مختصر)
+    // RANKS & SKILLS
     // =====================================================
     const RANKS = [
         { name: "المنبوذ", en: "The Outcast", xpRequired: 0, icon: "🚫", nextXp: 800 },
@@ -1106,12 +1237,12 @@
         localStorage.setItem("lastUpdateDates", JSON.stringify(lastUpdateDates)); 
     }
     
-    function addNormalResource(skill) { let inp=document.getElementById(`normal-res-${skill.replace(/\s/g,'')}`); if(!inp||!inp.value.trim()) return; let url=inp.value.trim(); if(!url.startsWith("http")) url="https://"+url; let key=getNormalResourceKey(skill); if(!resources[key]) resources[key]=[]; resources[key].push(url); saveAll(); renderSkills(); updateStats(); refreshXP(); inp.value=""; updateLastUpdateDate(skill); renderMissionCenter(); addToLog(`📎 أضفت رابطاً لمهارة "${skill}"`); }
-    function deleteNormalResource(skill,idx) { if(confirm("⚠️ حذف الرابط؟")){ let key=getNormalResourceKey(skill); if(resources[key]) resources[key].splice(idx,1); if(resources[key]?.length===0) delete resources[key]; saveAll(); renderSkills(); updateStats(); refreshXP(); addToLog(`🗑️ حذفت رابطاً من "${skill}"`); } }
-    function addSpecialResource(skill,sub,lvl) { let inp=document.getElementById(`special-res-${skill.replace(/\s/g,'')}-${sub}`); if(!inp||!inp.value.trim()) return; let url=inp.value.trim(); if(!url.startsWith("http")) url="https://"+url; let key=getSpecialResourceKey(skill,sub,lvl); if(!resources[key]) resources[key]=[]; resources[key].push(url); saveAll(); renderSkills(); updateStats(); refreshXP(); inp.value=""; addToLog(`📎 أضفت رابطاً لـ "${skill} - ${sub}"`); }
+    function addNormalResource(skill) { let inp=document.getElementById(`normal-res-${skill.replace(/\s/g,'')}`); if(!inp||!inp.value.trim()) return; let url=inp.value.trim(); if(!url.startsWith("http")) url="https://"+url; let key=getNormalResourceKey(skill); if(!resources[key]) resources[key]=[]; resources[key].push(url); saveAll(); renderSkills(); updateStats(); refreshXP(); inp.value=""; updateLastUpdateDate(skill); renderMissionCenter(); }
+    function deleteNormalResource(skill,idx) { if(confirm("⚠️ حذف الرابط؟")){ let key=getNormalResourceKey(skill); if(resources[key]) resources[key].splice(idx,1); if(resources[key]?.length===0) delete resources[key]; saveAll(); renderSkills(); updateStats(); refreshXP(); } }
+    function addSpecialResource(skill,sub,lvl) { let inp=document.getElementById(`special-res-${skill.replace(/\s/g,'')}-${sub}`); if(!inp||!inp.value.trim()) return; let url=inp.value.trim(); if(!url.startsWith("http")) url="https://"+url; let key=getSpecialResourceKey(skill,sub,lvl); if(!resources[key]) resources[key]=[]; resources[key].push(url); saveAll(); renderSkills(); updateStats(); refreshXP(); inp.value=""; }
     function deleteSpecialResource(skill,sub,lvl,idx) { if(confirm("⚠️ حذف الرابط؟")){ let key=getSpecialResourceKey(skill,sub,lvl); if(resources[key]) resources[key].splice(idx,1); if(resources[key]?.length===0) delete resources[key]; saveAll(); renderSkills(); updateStats(); refreshXP(); } }
-    function resetNormalSkill(skill) { if(confirm(`🔄 إعادة ضبط "${skill}"؟`)){ normalProgress[skill]=0; saveAll(); renderSkills(); updateStats(); refreshXP(); updateLastUpdateDate(skill); renderMissionCenter(); addToLog(`🔄 أعادت ضبط "${skill}" إلى 0%`); } }
-    function resetSubProgress(skill,sub,arr) { if(confirm(`🔄 إعادة ضبط "${skill} - ${sub}"؟`)){ specialProgress[skill][sub]=arr[0]; saveAll(); renderSkills(); updateStats(); refreshXP(); updateLastUpdateDate(skill,sub); renderMissionCenter(); addToLog(`🔄 أعادت ضبط "${skill} - ${sub}"`); } }
+    function resetNormalSkill(skill) { if(confirm(`🔄 إعادة ضبط "${skill}"؟`)){ normalProgress[skill]=0; saveAll(); renderSkills(); updateStats(); refreshXP(); updateLastUpdateDate(skill); renderMissionCenter(); } }
+    function resetSubProgress(skill,sub,arr) { if(confirm(`🔄 إعادة ضبط "${skill} - ${sub}"؟`)){ specialProgress[skill][sub]=arr[0]; saveAll(); renderSkills(); updateStats(); refreshXP(); updateLastUpdateDate(skill,sub); renderMissionCenter(); } }
     
     function updateStats() {
         let totalCount=0, totalSum=0;
@@ -1151,14 +1282,14 @@
     }
     
     function attachEvents() {
-        document.querySelectorAll(".level-btn[data-skill]").forEach(btn=>btn.addEventListener("click",e=>{ let s=btn.getAttribute("data-skill"), lvl=parseInt(btn.getAttribute("data-level")); if(s){ normalProgress[s]=lvl; saveAll(); renderSkills(); updateStats(); refreshXP(); updateLastUpdateDate(s); renderMissionCenter(); addToLog(`📈 رفعت "${s}" إلى ${lvl}%`); } }));
+        document.querySelectorAll(".level-btn[data-skill]").forEach(btn=>btn.addEventListener("click",e=>{ let s=btn.getAttribute("data-skill"), lvl=parseInt(btn.getAttribute("data-level")); if(s){ normalProgress[s]=lvl; saveAll(); renderSkills(); updateStats(); refreshXP(); updateLastUpdateDate(s); renderMissionCenter(); } }));
         document.querySelectorAll(".reset-skill-btn[data-skill-normal]").forEach(btn=>btn.addEventListener("click",e=>resetNormalSkill(btn.getAttribute("data-skill-normal"))));
         document.querySelectorAll(".add-normal-resource").forEach(btn=>btn.addEventListener("click",e=>addNormalResource(btn.getAttribute("data-skill"))));
         document.querySelectorAll(".delete-normal-resource").forEach(btn=>btn.addEventListener("click",e=>deleteNormalResource(btn.getAttribute("data-skill"), parseInt(btn.getAttribute("data-idx")))));
-        document.querySelectorAll(".reset-links-btn[data-skill-normal-resetlinks]").forEach(btn=>btn.addEventListener("click",e=>{ let skill=btn.getAttribute("data-skill-normal-resetlinks"); if(confirm(`⚠️ حذف كل روابط "${skill}"؟`)){ delete resources[getNormalResourceKey(skill)]; saveAll(); renderSkills(); updateStats(); refreshXP(); addToLog(`🗑️ حذفت كل روابط "${skill}"`); } }));
-        document.querySelectorAll(".special-level").forEach(btn=>btn.addEventListener("click",e=>{ let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level"); if(sn && sub){ specialProgress[sn][sub]=lvl; saveAll(); renderSkills(); updateStats(); refreshXP(); updateLastUpdateDate(sn, sub); renderMissionCenter(); addToLog(`📈 رفعت "${sn} - ${sub}" إلى ${lvl}`); } }));
+        document.querySelectorAll(".reset-links-btn[data-skill-normal-resetlinks]").forEach(btn=>btn.addEventListener("click",e=>{ let skill=btn.getAttribute("data-skill-normal-resetlinks"); if(confirm(`⚠️ حذف كل روابط "${skill}"؟`)){ delete resources[getNormalResourceKey(skill)]; saveAll(); renderSkills(); updateStats(); refreshXP(); } }));
+        document.querySelectorAll(".special-level").forEach(btn=>btn.addEventListener("click",e=>{ let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level"); if(sn && sub){ specialProgress[sn][sub]=lvl; saveAll(); renderSkills(); updateStats(); refreshXP(); updateLastUpdateDate(sn, sub); renderMissionCenter(); } }));
         document.querySelectorAll(".reset-progress-special").forEach(btn=>btn.addEventListener("click",e=>{ let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"); let found = specialSkillsOrder.find(s=>s.name===sn); if(found && found.subSkills[sub]) resetSubProgress(sn, sub, found.subSkills[sub]); }));
-        document.querySelectorAll(".reset-links-special").forEach(btn=>btn.addEventListener("click",e=>{ let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level"); if(confirm(`⚠️ حذف كل روابط "${sn} - ${sub} - ${lvl}"؟`)){ delete resources[getSpecialResourceKey(sn, sub, lvl)]; saveAll(); renderSkills(); updateStats(); refreshXP(); addToLog(`🗑️ حذفت كل روابط "${sn} - ${sub} - ${lvl}"`); } }));
+        document.querySelectorAll(".reset-links-special").forEach(btn=>btn.addEventListener("click",e=>{ let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level"); if(confirm(`⚠️ حذف كل روابط "${sn} - ${sub} - ${lvl}"؟`)){ delete resources[getSpecialResourceKey(sn, sub, lvl)]; saveAll(); renderSkills(); updateStats(); refreshXP(); } }));
         document.querySelectorAll(".add-special-resource").forEach(btn=>btn.addEventListener("click",e=>{ let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level"); addSpecialResource(sn, sub, lvl); }));
         document.querySelectorAll(".delete-special-resource").forEach(btn=>btn.addEventListener("click",e=>{ let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level"), idx=parseInt(btn.getAttribute("data-idx")); deleteSpecialResource(sn, sub, lvl, idx); }));
     }
@@ -1177,13 +1308,13 @@
         if(confirm("⚠️ إعادة ضبط كل شيء؟")){ 
             basicSkills.forEach(s=>normalProgress[s]=0); 
             specialSkillsOrder.forEach(skill=>{ for(let sub in skill.subSkills) specialProgress[skill.name][sub]=skill.subSkills[sub][0]; }); 
-            resources={}; personalTasks=[]; userXP=0; achievements=ACHIEVEMENTS.map(a=>({...a,achieved:false})); lastUpdateDates={}; notificationLog = ["✨ تم إعادة ضبط النظام"];
-            saveAll(); renderSkills(); updateStats(); refreshXP(); renderMissionCenter(); updateNotificationLog();
+            resources={}; personalTasks=[]; userXP=0; achievements=ACHIEVEMENTS.map(a=>({...a,achieved:false})); lastUpdateDates={}; 
+            saveAll(); renderSkills(); updateStats(); refreshXP(); renderMissionCenter(); 
             sendNotification("🔄 إعادة ضبط النظام", "تم مسح جميع البيانات بنجاح", "⚙️");
         } 
     });
     
-    initData(); renderSkills(); updateStats(); refreshXP(); renderMissionCenter(); updateNotificationLog();
+    initData(); renderSkills(); updateStats(); refreshXP(); renderMissionCenter();
 </script>
 </body>
 </html>
