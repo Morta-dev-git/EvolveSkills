@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>SmartBoard Pro - Toji Zenin System</title>
+    <title>SmartBoard Pro - التصميم القديم + ميزات جديدة</title>
     <style>
         * {
             margin: 0;
@@ -34,14 +34,263 @@
             z-index: -1;
         }
 
-        /* Solo Leveling XP Card - Toji Style */
+        /* Focus Mode */
+        body.focus-mode .skills-grid,
+        body.focus-mode .stats,
+        body.focus-mode .quick-add-section,
+        body.focus-mode #resetAllBtn,
+        body.focus-mode hr {
+            display: none !important;
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .mode-btn {
+            background: #2d1a3e;
+            border: 1px solid #7c3aed;
+            border-radius: 40px;
+            padding: 6px 16px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            color: #e0d0ff;
+        }
+
+        .mode-btn.active {
+            background: #7c3aed;
+            border-color: #fbbf24;
+        }
+
+        .mode-btn.focus-active {
+            background: #10b981;
+            border-color: #fbbf24;
+        }
+
+        .competition-stats {
+            background: linear-gradient(135deg, #0a0a1a, #050510);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #fbbf24;
+        }
+
+        .comp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .comp-card {
+            background: #1a0a2e;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .comp-improvement { color: #10b981; font-weight: bold; }
+        .comp-decline { color: #ef4444; font-weight: bold; }
+
+        .personal-best-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1a0a2e;
+            border-radius: 60px;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            z-index: 2000;
+            animation: popIn 0.5s ease forwards;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .timer-settings {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .timer-preset {
+            background: #2d1a3e;
+            border: none;
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            color: #e0d0ff;
+        }
+
+        .timer-preset.active {
+            background: #7c3aed;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 35px 20px 25px;
+            background: linear-gradient(135deg, rgba(30, 10, 40, 0.85) 0%, rgba(20, 5, 35, 0.9) 100%);
+            border-radius: 64px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(170, 102, 255, 0.5);
+        }
+
+        .hero .line1 { font-size: 1.8rem; font-weight: 800; background: linear-gradient(120deg, #e5b8ff, #c084fc, #a855f7); background-clip: text; -webkit-background-clip: text; color: transparent; }
+        .hero .line2 { font-size: 2.5rem; font-weight: 900; color: #fbbf24; text-shadow: 0 0 15px #a855f7; }
+        .hero .line3 { font-size: 1.4rem; font-weight: 700; color: #e2e8f0; border-top: 2px solid rgba(170, 102, 255, 0.6); display: inline-block; padding-top: 12px; }
+
+        .dashboard { max-width: 1600px; margin: auto; }
+        
+        .card {
+            background: rgba(20, 8, 30, 0.88);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 22px;
+            margin-bottom: 22px;
+            border: 1px solid rgba(170, 102, 255, 0.4);
+        }
+
+        /* الأدوات (Timer + Mission Center) */
+        .tools-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .timer-card {
+            background: linear-gradient(135deg, #0a0a1a, #050510);
+            border-radius: 28px;
+            padding: 16px 24px;
+            flex: 1;
+            min-width: 250px;
+            border: 1px solid #fbbf24;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .timer-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            font-family: monospace;
+            color: #fbbf24;
+            letter-spacing: 5px;
+        }
+
+        .timer-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .timer-btn {
+            background: #7c3aed;
+            border: none;
+            border-radius: 40px;
+            padding: 6px 16px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .mission-card {
+            background: linear-gradient(135deg, #0a0a1a, #050510);
+            border-radius: 28px;
+            padding: 16px 24px;
+            flex: 2;
+            min-width: 350px;
+            border: 1px solid #fbbf24;
+        }
+
+        .mission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .add-task-mini {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .add-task-mini input {
+            padding: 6px 12px;
+            border-radius: 60px;
+            border: 1px solid #8b5cf6;
+            background: #1a0a2e;
+            color: white;
+            font-size: 0.75rem;
+            width: 180px;
+        }
+
+        .mission-section {
+            margin-top: 12px;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #fbbf24;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mission-list {
+            list-style: none;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .mission-item {
+            background: #1a0a2e;
+            margin: 5px 0;
+            padding: 8px 12px;
+            border-radius: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .mission-item.completed { opacity: 0.6; text-decoration: line-through; }
+        .mission-actions { display: flex; gap: 8px; }
+        .complete-btn { background: #10b981; border: none; border-radius: 40px; padding: 2px 10px; cursor: pointer; font-size: 0.7rem; color: white; }
+        .delete-btn { background: #ef4444; border: none; border-radius: 40px; padding: 2px 10px; cursor: pointer; font-size: 0.7rem; color: white; }
+        .review-suggestion-btn { background: #fbbf24; color: #1a0a2e; border: none; border-radius: 40px; padding: 2px 10px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
+
         .xp-card {
             background: linear-gradient(135deg, #0a0a1a, #050510);
             border-radius: 28px;
             padding: 16px 24px;
             margin-bottom: 25px;
             border: 2px solid #fbbf24;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-wrap: wrap;
             align-items: center;
@@ -62,138 +311,16 @@
             flex-wrap: wrap;
         }
 
-        .rank-icon {
-            font-size: 3.5rem;
-            filter: drop-shadow(0 0 10px #fbbf24);
-        }
+        .rank-icon { font-size: 3.5rem; filter: drop-shadow(0 0 10px #fbbf24); }
+        .rank-text { text-align: center; }
+        .rank-name { font-size: 1.8rem; font-weight: 800; background: linear-gradient(120deg, #fbbf24, #f59e0b); background-clip: text; -webkit-background-clip: text; color: transparent; }
+        .rank-title { font-size: 0.8rem; color: #d8b4fe; }
 
-        .rank-text {
-            text-align: center;
-        }
-
-        .rank-name {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(120deg, #fbbf24, #f59e0b);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-
-        .rank-title {
-            font-size: 0.8rem;
-            color: #d8b4fe;
-        }
-
-        .xp-stats {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .xp-bar-container {
-            background: #2d1a3e;
-            border-radius: 60px;
-            height: 16px;
-            overflow: hidden;
-            margin: 8px 0;
-        }
-
-        .xp-bar-fill {
-            background: linear-gradient(90deg, #fbbf24, #f59e0b);
-            width: 0%;
-            height: 100%;
-            border-radius: 60px;
-            transition: width 0.5s ease;
-        }
-
-        .xp-numbers {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: #e0d0ff;
-        }
-
-        .next-level {
-            font-size: 0.7rem;
-            color: #fbbf24;
-        }
-
-        .achievement-toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, #1a0a2e, #2d1a3e);
-            border-right: 5px solid #fbbf24;
-            border-radius: 16px;
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 1000;
-            animation: slideIn 0.5s ease forwards;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .achievement-toast.fade-out {
-            animation: fadeOut 0.5s ease forwards;
-        }
-
-        @keyframes fadeOut {
-            to { opacity: 0; transform: translateX(100%); }
-        }
-
-        .hero {
-            text-align: center;
-            padding: 35px 20px 25px;
-            background: linear-gradient(135deg, rgba(30, 10, 40, 0.85) 0%, rgba(20, 5, 35, 0.9) 100%);
-            border-radius: 64px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(170, 102, 255, 0.5);
-        }
-
-        .hero .line1 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(120deg, #e5b8ff, #c084fc, #a855f7);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-
-        .hero .line2 {
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: #fbbf24;
-            text-shadow: 0 0 15px #a855f7;
-        }
-
-        .hero .line3 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #e2e8f0;
-            border-top: 2px solid rgba(170, 102, 255, 0.6);
-            display: inline-block;
-            padding-top: 12px;
-        }
-
-        .dashboard {
-            max-width: 1600px;
-            margin: auto;
-        }
-
-        .card {
-            background: rgba(20, 8, 30, 0.88);
-            backdrop-filter: blur(8px);
-            border-radius: 32px;
-            padding: 22px;
-            margin-bottom: 22px;
-            border: 1px solid rgba(170, 102, 255, 0.4);
-        }
+        .xp-stats { flex: 1; min-width: 200px; }
+        .xp-bar-container { background: #2d1a3e; border-radius: 60px; height: 16px; overflow: hidden; margin: 8px 0; }
+        .xp-bar-fill { background: linear-gradient(90deg, #fbbf24, #f59e0b); width: 0%; height: 100%; border-radius: 60px; transition: width 0.5s ease; }
+        .xp-numbers { display: flex; justify-content: space-between; font-size: 0.8rem; color: #e0d0ff; }
+        .next-level { font-size: 0.7rem; color: #fbbf24; }
 
         .stats {
             display: flex;
@@ -229,171 +356,131 @@
             transition: 0.2s;
         }
 
-        .skill-card:hover {
-            transform: translateY(-3px);
-            border-color: #a855f7;
-        }
+        .skill-card:hover { transform: translateY(-3px); border-color: #a855f7; }
+        .skill-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .skill-name { font-size: 1.15rem; font-weight: 800; color: #f0e6ff; }
+        .level-buttons { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+        .level-btn { background: #2d1a3e; border: none; border-radius: 40px; padding: 5px 11px; font-size: 0.72rem; font-weight: 600; cursor: pointer; color: #e0d0ff; transition: 0.15s; }
+        .level-btn.active-level { background: #8b5cf6; color: white; box-shadow: 0 0 8px #a855f7; }
+        .level-btn:hover { background: #a855f7; color: white; }
+        .shared-resource-section, .sub-skill-block { background: #140a20d9; border-radius: 18px; padding: 10px; margin-top: 10px; border: 1px solid #7c3aed; }
+        .resource-input-group { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+        .resource-input { flex: 1; padding: 6px 10px; border-radius: 60px; border: 1px solid #8b5cf6; background: #1a0a2e; color: white; font-size: 0.73rem; }
+        .add-resource-btn, .add-normal-resource, .add-special-resource { background: #7c3aed; border: none; border-radius: 60px; padding: 5px 12px; cursor: pointer; font-size: 0.7rem; color: white; font-weight: bold; }
+        .delete-resource, .delete-normal-resource, .delete-special-resource { background: none; border: none; color: #f472b6; font-size: 1rem; cursor: pointer; }
+        .reset-skill-btn, .reset-progress, .reset-links { background: #2a1a3a; border: 1px solid #7c3aed; border-radius: 30px; padding: 3px 10px; font-size: 0.65rem; cursor: pointer; font-weight: bold; color: #fbbf24; }
 
-        .skill-header {
+        .quick-add-section { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+        .quick-add-section input { flex: 1; padding: 8px 15px; border-radius: 60px; border: 1px solid #8b5cf6; background: #1a0a2e; color: white; font-size: 0.85rem; }
+        
+        button { background: #7c3aed; color: white; border: none; border-radius: 60px; padding: 5px 12px; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
+        footer { text-align: center; margin-top: 30px; opacity: 0.85; font-size: 0.75rem; color: #c0a0e0; }
+        hr { border-color: #8b5cf6; margin: 15px 0; }
+        .sub-skill-title { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; font-weight: bold; font-size: 0.85rem; color: #fbbf24; }
+        h2, h3 { color: #fbbf24; }
+
+        .achievement-toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #1a0a2e, #2d1a3e);
+            border-right: 5px solid #fbbf24;
+            border-radius: 16px;
+            padding: 12px 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 12px;
+            z-index: 1000;
+            animation: slideIn 0.5s ease forwards;
         }
 
-        .skill-name {
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: #f0e6ff;
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
-        .level-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin: 8px 0 12px;
+        .achievement-toast.fade-out {
+            animation: fadeOut 0.5s ease forwards;
         }
 
-        .level-btn {
-            background: #2d1a3e;
-            border: none;
-            border-radius: 40px;
-            padding: 5px 11px;
-            font-size: 0.72rem;
-            font-weight: 600;
-            cursor: pointer;
-            color: #e0d0ff;
-            transition: 0.15s;
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateX(100%); }
         }
 
-        .level-btn.active-level {
-            background: #8b5cf6;
-            color: white;
-            box-shadow: 0 0 8px #a855f7;
-        }
-
-        .level-btn:hover {
-            background: #a855f7;
-            color: white;
-        }
-
-        .shared-resource-section, .sub-skill-block {
-            background: #140a20d9;
-            border-radius: 18px;
-            padding: 10px;
-            margin-top: 10px;
-            border: 1px solid #7c3aed;
-        }
-
-        .resource-input-group {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-bottom: 8px;
-        }
-
-        .resource-input {
-            flex: 1;
-            padding: 6px 10px;
-            border-radius: 60px;
-            border: 1px solid #8b5cf6;
-            background: #1a0a2e;
-            color: white;
-            font-size: 0.73rem;
-        }
-
-        .add-resource-btn, .add-normal-resource, .add-special-resource {
-            background: #7c3aed;
-            border: none;
-            border-radius: 60px;
-            padding: 5px 12px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            color: white;
-            font-weight: bold;
-        }
-
-        .delete-resource, .delete-normal-resource, .delete-special-resource {
-            background: none;
-            border: none;
-            color: #f472b6;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-
-        .reset-skill-btn, .reset-progress, .reset-links {
-            background: #2a1a3a;
-            border: 1px solid #7c3aed;
-            border-radius: 30px;
-            padding: 3px 10px;
-            font-size: 0.65rem;
-            cursor: pointer;
-            font-weight: bold;
-            color: #fbbf24;
-        }
-
-        .task-list li {
-            background: #1a0a2ecc;
-            margin: 6px 0;
-            padding: 8px 16px;
-            border-radius: 60px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            border: 1px solid #7c3aed;
-        }
-
-        button {
-            background: #7c3aed;
-            color: white;
-            border: none;
-            border-radius: 60px;
-            padding: 5px 12px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            opacity: 0.85;
-            font-size: 0.75rem;
-            color: #c0a0e0;
-        }
-
-        hr {
-            border-color: #8b5cf6;
-            margin: 15px 0;
-        }
-
-        .sub-skill-title {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 8px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            color: #fbbf24;
-        }
-
-        h2, h3 {
-            color: #fbbf24;
-        }
+        .empty-message { text-align: center; color: #aaa; padding: 10px; font-size: 0.75rem; }
     </style>
 </head>
 <body>
 <div class="dashboard">
+    <!-- Mode Buttons -->
+    <div class="mode-buttons">
+        <button id="focusModeBtn" class="mode-btn">🧘 وضع التركيز العميق</button>
+        <button id="competitionModeBtn" class="mode-btn">⚔️ وضع التنافس</button>
+    </div>
+
     <div class="hero">
         <div class="line1">“Ten billion percent, we're gonna make it”</div>
         <div class="line2">Fight... or be forgotten</div>
         <div class="line3">“My magic is never giving up”</div>
     </div>
 
-    <!-- Toji Zenin XP Card -->
+    <!-- Competition Panel -->
+    <div id="competitionPanel" style="display: none;">
+        <div class="competition-stats">
+            <div class="comp-header">
+                <span>⚔️ تحدى نفسك ⚔️</span>
+                <span id="compPeriod">هذا الأسبوع vs الأسبوع الماضي</span>
+            </div>
+            <div id="competitionContent"></div>
+            <div id="weeklyGoalContent" style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #7c3aed;"></div>
+        </div>
+    </div>
+
+    <!-- Timer + Mission Center -->
+    <div class="tools-container">
+        <div class="timer-card">
+            <div style="text-align: center; margin-bottom: 8px;">⏱️ جلسة تركيز</div>
+            <div class="timer-display" id="timerDisplay">25:00</div>
+            <div class="timer-settings">
+                <button class="timer-preset" data-time="25">25 دقيقة</button>
+                <button class="timer-preset" data-time="30">30 دقيقة</button>
+                <button class="timer-preset" data-time="45">45 دقيقة</button>
+                <button class="timer-preset" data-time="60">60 دقيقة</button>
+            </div>
+            <div class="timer-buttons">
+                <button class="timer-btn" id="timerStartBtn">▶ ابدأ</button>
+                <button class="timer-btn" id="timerPauseBtn">⏸ إيقاف</button>
+                <button class="timer-btn" id="timerResetBtn">🔄 إعادة</button>
+            </div>
+            <div style="text-align: center; font-size: 0.7rem; margin-top: 8px;">🎁 عند الإكمال: +50 XP + <span id="focusBonusText">25</span> XP إضافي</div>
+        </div>
+
+        <div class="mission-card">
+            <div class="mission-header">
+                <span>📋 مركز المهام الذكي</span>
+                <div class="add-task-mini">
+                    <input type="text" id="quickTaskInput" placeholder="مهمة جديدة...">
+                    <button id="quickAddTaskBtn">➕ إضافة</button>
+                </div>
+            </div>
+            
+            <div class="mission-section">
+                <div class="section-title">👤 مهامي الشخصية</div>
+                <ul class="mission-list" id="personalTasksList">
+                    <li class="empty-message">لا توجد مهام شخصية</li>
+                </ul>
+            </div>
+
+            <div class="mission-section">
+                <div class="section-title">🤖 مهام مقترحة (من مهاراتك المهملة)</div>
+                <ul class="mission-list" id="suggestedTasksList">
+                    <li class="empty-message">✨ لا توجد مهارات مهملة</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- XP Card -->
     <div class="xp-card" id="xpCard">
         <div class="level-info">
             <div class="rank-icon" id="rankIcon">🚫</div>
@@ -418,22 +505,336 @@
         <h2>📊 لوحة تطور المهارات - بركة القرآن 🌙</h2>
         <div class="stats" id="statsArea"></div>
         <div class="skills-grid" id="skillsGrid"></div>
-        
         <hr>
-        <h3>📝 مهامي اليومية</h3>
-        <div class="task-input" style="display:flex; gap:8px; margin:12px 0;">
-            <input type="text" id="taskName" class="resource-input" placeholder="أضف مهمة جديدة...">
-            <button id="addTask">➕ أضف</button>
+        <h3>➕ إضافة مهمة سريعة</h3>
+        <div class="quick-add-section">
+            <input type="text" id="taskName" placeholder="أضف مهمة جديدة...">
+            <button id="addTask">➕ أضف مهمة</button>
         </div>
-        <ul class="task-list" id="taskList"></ul>
-        <button id="resetAllBtn" style="background:#6d28d9; margin-top:8px;">🔄 إعادة تعيين الكل</button>
+        <button id="resetAllBtn" style="background:#6d28d9; margin-top:15px;">🔄 إعادة تعيين الكل</button>
     </div>
-    <footer>⚡ نظام الترقية - مستوحى من توجي زينين ⚡</footer>
+    <footer>⚡ نظام الترقية - Focus Mode | Competition Mode ⚡</footer>
 </div>
 
 <script>
     // =====================================================
-    // نظام الألقاب المستوحى من توجي زينين (13 مستوى)
+    // TIMER SYSTEM
+    // =====================================================
+    let timerSeconds = 25 * 60;
+    let timerInterval = null;
+    let timerRunning = false;
+    let currentPreset = 25;
+    const focusBonusXP = 25;
+    const timerDisplay = document.getElementById('timerDisplay');
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timerSeconds / 60);
+        const seconds = timerSeconds % 60;
+        timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function timerComplete() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerRunning = false;
+        userXP += 50;
+        if (document.body.classList.contains('focus-mode')) {
+            userXP += focusBonusXP;
+            showAchievementToast("🧘 وضع التركيز العميق!", `+${focusBonusXP} XP إضافي`);
+            updateWeeklyStats(0, 0, 1);
+        }
+        localStorage.setItem("userXP", userXP);
+        refreshXP();
+        showAchievementToast("⏱️ أكملت جلسة تركيز!", "+50 XP");
+        timerSeconds = currentPreset * 60;
+        updateTimerDisplay();
+        if (document.body.classList.contains('focus-mode')) {
+            setTimeout(() => {
+                document.body.classList.remove('focus-mode');
+                document.getElementById('focusModeBtn').classList.remove('focus-active');
+                document.getElementById('focusModeBtn').innerHTML = '🧘 وضع التركيز العميق';
+                showAchievementToast("🧘", "تم الخروج من وضع التركيز");
+            }, 2000);
+        }
+    }
+
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerRunning = true;
+        timerInterval = setInterval(() => {
+            if (timerSeconds <= 1) timerComplete();
+            else { timerSeconds--; updateTimerDisplay(); }
+        }, 1000);
+    }
+
+    document.getElementById('timerStartBtn').addEventListener('click', () => { if (!timerRunning) startTimer(); });
+    document.getElementById('timerPauseBtn').addEventListener('click', () => { if (timerInterval) clearInterval(timerInterval); timerRunning = false; });
+    document.getElementById('timerResetBtn').addEventListener('click', () => { if (timerInterval) clearInterval(timerInterval); timerRunning = false; timerSeconds = currentPreset * 60; updateTimerDisplay(); });
+
+    document.querySelectorAll('.timer-preset').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentPreset = parseInt(btn.getAttribute('data-time'));
+            timerSeconds = currentPreset * 60;
+            updateTimerDisplay();
+        });
+    });
+    document.querySelector('.timer-preset[data-time="25"]').classList.add('active');
+
+    // =====================================================
+    // FOCUS MODE
+    // =====================================================
+    const focusModeBtn = document.getElementById('focusModeBtn');
+    focusModeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('focus-mode');
+        if (document.body.classList.contains('focus-mode')) {
+            focusModeBtn.classList.add('focus-active');
+            focusModeBtn.innerHTML = '🧘 الخروج من التركيز';
+            showAchievementToast("🧘 وضع التركيز العميق", "تم إخفاء جميع المهارات للتركيز الكامل");
+        } else {
+            focusModeBtn.classList.remove('focus-active');
+            focusModeBtn.innerHTML = '🧘 وضع التركيز العميق';
+        }
+    });
+
+    // =====================================================
+    // COMPETITION MODE
+    // =====================================================
+    let weeklyStats = JSON.parse(localStorage.getItem("weeklyStats")) || { xp: 0, tasks: 0, focusSessions: 0, week: getWeekNumber(), month: new Date().getMonth() };
+    let previousWeeklyStats = JSON.parse(localStorage.getItem("previousWeeklyStats")) || null;
+    let previousMonthlyStats = JSON.parse(localStorage.getItem("previousMonthlyStats")) || null;
+    let weeklyGoal = JSON.parse(localStorage.getItem("weeklyGoal")) || { target: 10, current: 0, completed: false };
+    let personalBest = JSON.parse(localStorage.getItem("personalBest")) || { xp: 0, tasks: 0 };
+
+    function getWeekNumber() {
+        const now = new Date();
+        const start = new Date(now.getFullYear(), 0, 1);
+        return Math.ceil(((now - start) / 86400000 + start.getDay() + 1) / 7);
+    }
+
+    function updateWeeklyStats(xpGain = 0, taskGain = 0, focusGain = 0) {
+        const currentWeek = getWeekNumber();
+        if (weeklyStats.week !== currentWeek) {
+            previousWeeklyStats = { ...weeklyStats };
+            localStorage.setItem("previousWeeklyStats", JSON.stringify(previousWeeklyStats));
+            weeklyStats = { xp: 0, tasks: 0, focusSessions: 0, week: currentWeek, month: new Date().getMonth() };
+            weeklyGoal = { target: 10, current: 0, completed: false };
+        }
+        weeklyStats.xp += xpGain;
+        weeklyStats.tasks += taskGain;
+        weeklyStats.focusSessions += focusGain;
+        weeklyGoal.current = weeklyStats.tasks;
+        
+        if (!weeklyGoal.completed && weeklyGoal.current >= weeklyGoal.target) {
+            weeklyGoal.completed = true;
+            userXP += 200;
+            localStorage.setItem("userXP", userXP);
+            refreshXP();
+            showAchievementToast("🎯 حققت الهدف الأسبوعي!", "+200 XP");
+        }
+        
+        localStorage.setItem("weeklyStats", JSON.stringify(weeklyStats));
+        localStorage.setItem("weeklyGoal", JSON.stringify(weeklyGoal));
+        
+        if (weeklyStats.xp > personalBest.xp) {
+            personalBest.xp = weeklyStats.xp;
+            showPersonalBest(`🏆 رقم قياسي جديد في XP الأسبوعي! ${personalBest.xp} XP`);
+        }
+        if (weeklyStats.tasks > personalBest.tasks) {
+            personalBest.tasks = weeklyStats.tasks;
+            showPersonalBest(`🏆 رقم قياسي جديد في المهام! ${personalBest.tasks} مهمة`);
+        }
+        localStorage.setItem("personalBest", JSON.stringify(personalBest));
+    }
+
+    function showPersonalBest(message) {
+        const toast = document.createElement('div');
+        toast.className = 'personal-best-toast';
+        toast.innerHTML = message;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('fade-out');
+            setTimeout(() => toast.remove(), 500);
+        }, 3000);
+    }
+
+    function updateMonthlyStats() {
+        const currentMonth = new Date().getMonth();
+        if (weeklyStats.month !== currentMonth) {
+            previousMonthlyStats = { xp: weeklyStats.xp, tasks: weeklyStats.tasks };
+            localStorage.setItem("previousMonthlyStats", JSON.stringify(previousMonthlyStats));
+            weeklyStats.month = currentMonth;
+            localStorage.setItem("weeklyStats", JSON.stringify(weeklyStats));
+        }
+    }
+
+    function renderCompetition() {
+        updateMonthlyStats();
+        const weeklyComp = previousWeeklyStats ? {
+            xp: weeklyStats.xp - (previousWeeklyStats.xp || 0),
+            tasks: weeklyStats.tasks - (previousWeeklyStats.tasks || 0),
+            focus: weeklyStats.focusSessions - (previousWeeklyStats.focusSessions || 0)
+        } : { xp: weeklyStats.xp, tasks: weeklyStats.tasks, focus: weeklyStats.focusSessions };
+        
+        const monthlyComp = previousMonthlyStats ? {
+            xp: weeklyStats.xp - (previousMonthlyStats.xp || 0),
+            tasks: weeklyStats.tasks - (previousMonthlyStats.tasks || 0)
+        } : { xp: weeklyStats.xp, tasks: weeklyStats.tasks };
+        
+        const weeklyPercent = previousWeeklyStats ? ((weeklyStats.xp - previousWeeklyStats.xp) / (previousWeeklyStats.xp || 1) * 100).toFixed(0) : 100;
+        
+        document.getElementById('competitionContent').innerHTML = `
+            <div class="comp-card"><span>🗡️ XP هذا الأسبوع:</span><span><strong>${weeklyStats.xp}</strong> XP</span><span class="${weeklyComp.xp >= 0 ? 'comp-improvement' : 'comp-decline'}">${weeklyComp.xp >= 0 ? '▲ +' : '▼ '}${Math.abs(weeklyComp.xp)} XP (${weeklyPercent}%)</span></div>
+            <div class="comp-card"><span>✅ المهام المنجزة:</span><span><strong>${weeklyStats.tasks}</strong> مهمة</span><span class="${weeklyComp.tasks >= 0 ? 'comp-improvement' : 'comp-decline'}">${weeklyComp.tasks >= 0 ? '▲ +' : '▼ '}${Math.abs(weeklyComp.tasks)}</span></div>
+            <div class="comp-card"><span>⏱️ جلسات التركيز:</span><span><strong>${weeklyStats.focusSessions}</strong> جلسة</span><span class="${weeklyComp.focus >= 0 ? 'comp-improvement' : 'comp-decline'}">${weeklyComp.focus >= 0 ? '▲ +' : '▼ '}${Math.abs(weeklyComp.focus)}</span></div>
+            <div class="comp-card"><span>🏆 أفضل رقم أسبوعي (XP):</span><span><strong>${personalBest.xp}</strong> XP</span></div>
+            <div class="comp-card"><span>🏆 أفضل رقم أسبوعي (مهام):</span><span><strong>${personalBest.tasks}</strong> مهمة</span></div>
+        `;
+        
+        const goalPercent = (weeklyGoal.current / weeklyGoal.target * 100).toFixed(0);
+        document.getElementById('weeklyGoalContent').innerHTML = `
+            <div class="comp-header"><span>🎯 الهدف الأسبوعي: ${weeklyGoal.current}/${weeklyGoal.target} مهمة</span><span>${goalPercent}%</span></div>
+            <div class="xp-bar-container" style="margin-top:5px;"><div class="xp-bar-fill" style="width: ${goalPercent}%;"></div></div>
+            ${weeklyGoal.completed ? '<span style="color:#10b981;">✅ تم تحقيق الهدف الأسبوعي! +200 XP</span>' : ''}
+        `;
+    }
+
+    let competitionModeActive = false;
+    const competitionModeBtn = document.getElementById('competitionModeBtn');
+    const competitionPanel = document.getElementById('competitionPanel');
+    
+    competitionModeBtn.addEventListener('click', () => {
+        competitionModeActive = !competitionModeActive;
+        if (competitionModeActive) {
+            competitionPanel.style.display = 'block';
+            competitionModeBtn.classList.add('active');
+            renderCompetition();
+        } else {
+            competitionPanel.style.display = 'none';
+            competitionModeBtn.classList.remove('active');
+        }
+    });
+
+    // =====================================================
+    // TASKS SYSTEM
+    // =====================================================
+    let personalTasks = JSON.parse(localStorage.getItem("personalTasks")) || [];
+    let lastUpdateDates = JSON.parse(localStorage.getItem("lastUpdateDates")) || {};
+
+    function updateLastUpdateDate(skillName, subSkill = null) {
+        const key = subSkill ? `${skillName}_${subSkill}` : skillName;
+        lastUpdateDates[key] = Date.now();
+        localStorage.setItem("lastUpdateDates", JSON.stringify(lastUpdateDates));
+    }
+
+    function getDaysSinceLastUpdate(skillName, subSkill = null) {
+        const key = subSkill ? `${skillName}_${subSkill}` : skillName;
+        const lastUpdate = lastUpdateDates[key];
+        if (!lastUpdate) return null;
+        return Math.floor((Date.now() - lastUpdate) / (1000 * 60 * 60 * 24));
+    }
+
+    function checkOverdueSkills() {
+        const overdue = [];
+        basicSkills.forEach(skill => {
+            const days = getDaysSinceLastUpdate(skill);
+            if (days !== null && days >= 7 && normalProgress[skill] > 0 && normalProgress[skill] < 100) {
+                overdue.push({ skill, sub: null, days });
+            }
+        });
+        specialSkillsOrder.forEach(skillObj => {
+            for (let sub in skillObj.subSkills) {
+                const days = getDaysSinceLastUpdate(skillObj.name, sub);
+                const current = specialProgress[skillObj.name]?.[sub];
+                const levelsArr = skillObj.subSkills[sub];
+                const isComplete = current === levelsArr[levelsArr.length-1];
+                if (days !== null && days >= 7 && !isComplete) {
+                    overdue.push({ skill: skillObj.name, sub, days });
+                }
+            }
+        });
+        return overdue;
+    }
+
+    function addPersonalTask(taskName) {
+        if (!taskName.trim()) return;
+        personalTasks.push({ name: taskName.trim(), completed: false, addedAt: Date.now() });
+        saveAll();
+        renderMissionCenter();
+    }
+
+    function togglePersonalTask(index) {
+        personalTasks[index].completed = !personalTasks[index].completed;
+        if (personalTasks[index].completed) {
+            userXP += 20;
+            localStorage.setItem("userXP", userXP);
+            refreshXP();
+            updateWeeklyStats(20, 1, 0);
+            showAchievementToast("✅ أنجزت مهمة!", "+20 XP");
+        }
+        saveAll();
+        renderMissionCenter();
+    }
+
+    function deletePersonalTask(index) {
+        personalTasks.splice(index, 1);
+        saveAll();
+        renderMissionCenter();
+    }
+
+    function completeSuggestedTask(skill, sub) {
+        userXP += 30;
+        localStorage.setItem("userXP", userXP);
+        refreshXP();
+        updateWeeklyStats(30, 1, 0);
+        updateLastUpdateDate(skill, sub || null);
+        showAchievementToast(`📚 راجعت "${sub ? skill + ' - ' + sub : skill}"`, "+30 XP");
+        renderMissionCenter();
+        renderSkills();
+    }
+
+    function renderMissionCenter() {
+        const personalList = document.getElementById('personalTasksList');
+        if (personalTasks.length === 0) {
+            personalList.innerHTML = '<li class="empty-message">✨ لا توجد مهام شخصية</li>';
+        } else {
+            personalList.innerHTML = personalTasks.map((task, idx) => `
+                <li class="mission-item ${task.completed ? 'completed' : ''}">
+                    <span>${task.name}</span>
+                    <div class="mission-actions">
+                        ${!task.completed ? `<button class="complete-btn" data-personal-idx="${idx}">✔ تم</button>` : ''}
+                        <button class="delete-btn" data-personal-delete="${idx}">🗑</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        const overdue = checkOverdueSkills();
+        const suggestedList = document.getElementById('suggestedTasksList');
+        if (overdue.length === 0) {
+            suggestedList.innerHTML = '<li class="empty-message">✨ لا توجد مهارات مهملة</li>';
+        } else {
+            suggestedList.innerHTML = overdue.map(item => {
+                const name = item.sub ? `${item.skill} - ${item.sub}` : item.skill;
+                return `<li class="mission-item"><span>📢 ${name} (مهملة منذ ${item.days} يوم)</span><button class="review-suggestion-btn" data-suggest-skill="${item.skill}" data-suggest-sub="${item.sub || ''}">مراجعة (+30 XP)</button></li>`;
+            }).join('');
+        }
+
+        document.querySelectorAll('[data-personal-idx]').forEach(btn => btn.addEventListener('click', (e) => { togglePersonalTask(parseInt(btn.getAttribute('data-personal-idx'))); }));
+        document.querySelectorAll('[data-personal-delete]').forEach(btn => btn.addEventListener('click', (e) => { deletePersonalTask(parseInt(btn.getAttribute('data-personal-delete'))); }));
+        document.querySelectorAll('[data-suggest-skill]').forEach(btn => btn.addEventListener('click', (e) => { completeSuggestedTask(btn.getAttribute('data-suggest-skill'), btn.getAttribute('data-suggest-sub')); }));
+    }
+
+    function showAchievementToast(title, message) {
+        const toast = document.createElement('div');
+        toast.className = 'achievement-toast';
+        toast.innerHTML = `<span style="font-size:1.5rem;">🏆</span><div><div style="font-weight:bold;">${title}</div><div>${message}</div></div>`;
+        document.body.appendChild(toast);
+        setTimeout(() => { toast.classList.add('fade-out'); setTimeout(() => toast.remove(), 500); }, 3000);
+    }
+
+    // =====================================================
+    // RANKS & SKILLS (full)
     // =====================================================
     const RANKS = [
         { name: "المنبوذ", en: "The Outcast", xpRequired: 0, icon: "🚫", nextXp: 800 },
@@ -451,7 +852,6 @@
         { name: "توجي - القاتل الأعلى", en: "Toji - Supreme Slayer", xpRequired: 60000, icon: "⚡🗡️", nextXp: null }
     ];
 
-    // الإنجازات
     const ACHIEVEMENTS = [
         { id: "first_100", name: "🎯 أول 100%", description: "أول مهارة تصل إلى 100%", xpReward: 500, achieved: false },
         { id: "five_skills", name: "🌟 5 مهارات كاملة", description: "5 مهارات بمستوى 100%", xpReward: 1000, achieved: false },
@@ -464,9 +864,6 @@
     let currentRankIndex = 0;
     let achievements = JSON.parse(localStorage.getItem("achievements")) || ACHIEVEMENTS.map(a => ({ ...a, achieved: false }));
 
-    // =====================================================
-    // المهارات (نفس الكود السابق)
-    // =====================================================
     const basicSkills = [
         "Data Analytics", "Time Management", "Communication", "Creative Thinking",
         "Social Skills", "Branding", "Budgeting", "Business Management",
@@ -476,380 +873,131 @@
     ];
     const normalLevels = [0, 25, 50, 75, 100];
     
-    const chessSkill = {
-        name: "♟️ الشطرنج (Chess)",
-        subSkills: {
-            "Rapid": ["800-1200", "1200-1500", "1500-1800"],
-            "Blitz": ["600-800", "800-1200", "1200-1500", "1500-1800"],
-            "Bullet": ["400-600", "600-800", "800-1200", "1200-1500", "1500-1800"]
-        }
-    };
-    
-    const englishSkill = {
-        name: "🇬🇧 English",
-        subSkills: {
-            "Pronunciation": ["A1","A2","B1","B2","C1","C2"],
-            "Writing": ["A1","A2","B1","B2","C1","C2"]
-        }
-    };
-    
-    const deutschSkill = {
-        name: "🇩🇪 Deutsch (German)",
-        subSkills: {
-            "Pronunciation": ["A1","A2","B1","B2","C1","C2"],
-            "Writing": ["A1","A2","B1","B2","C1","C2"]
-        }
-    };
-    
-    const sportSkill = {
-        name: "🏃 الرياضة (Sport)",
-        subSkills: {
-            "Running": ["10-12","12-15","15-18","18-21"],
-            "Push Up": ["30-35","35-40","40-45","45-50","55-60"],
-            "Pull Up": ["10-15","15-20","20-25","25-30"],
-            "Squat": ["50-100","100-150","150-200","200-250"]
-        }
-    };
-    
-    const simulationSkill = {
-        name: "🧪 Simulation physicochimique",
-        subSkills: {
-            "Niveau": ["débutant","amateur","intermédiaire","expert"]
-        }
-    };
-    
-    const quranSkill = {
-        name: "📖 حفظ القرآن الكريم",
-        subSkills: {
-            "الحفظ الجديد": [
-                "1 جزء", "2 جزء", "3 جزء", "4 جزء", "5 جزء",
-                "6 جزء", "7 جزء", "8 جزء", "9 جزء", "10 جزء",
-                "11-15 جزء", "16-20 جزء", "21-25 جزء", "26-30 جزء"
-            ],
-            "المراجعة": ["ضعيف", "متوسط", "جيد", "ممتاز", "متقن"]
-        }
-    };
+    const chessSkill = { name: "♟️ الشطرنج (Chess)", subSkills: { "Rapid": ["800-1200","1200-1500","1500-1800"], "Blitz": ["600-800","800-1200","1200-1500","1500-1800"], "Bullet": ["400-600","600-800","800-1200","1200-1500","1500-1800"] } };
+    const englishSkill = { name: "🇬🇧 English", subSkills: { "Pronunciation": ["A1","A2","B1","B2","C1","C2"], "Writing": ["A1","A2","B1","B2","C1","C2"] } };
+    const deutschSkill = { name: "🇩🇪 Deutsch (German)", subSkills: { "Pronunciation": ["A1","A2","B1","B2","C1","C2"], "Writing": ["A1","A2","B1","B2","C1","C2"] } };
+    const sportSkill = { name: "🏃 الرياضة (Sport)", subSkills: { "Running": ["10-12","12-15","15-18","18-21"], "Push Up": ["30-35","35-40","40-45","45-50","55-60"], "Pull Up": ["10-15","15-20","20-25","25-30"], "Squat": ["50-100","100-150","150-200","200-250"] } };
+    const simulationSkill = { name: "🧪 Simulation physicochimique", subSkills: { "Niveau": ["débutant","amateur","intermédiaire","expert"] } };
+    const quranSkill = { name: "📖 حفظ القرآن الكريم", subSkills: { "الحفظ الجديد": ["1 جزء","2 جزء","3 جزء","4 جزء","5 جزء","6 جزء","7 جزء","8 جزء","9 جزء","10 جزء","11-15 جزء","16-20 جزء","21-25 جزء","26-30 جزء"], "المراجعة": ["ضعيف","متوسط","جيد","ممتاز","متقن"] } };
     
     const specialSkillsOrder = [chessSkill, englishSkill, deutschSkill, sportSkill, simulationSkill, quranSkill];
     
     let normalProgress = JSON.parse(localStorage.getItem("normalProgress")) || {};
     let specialProgress = JSON.parse(localStorage.getItem("specialProgress")) || {};
     let resources = JSON.parse(localStorage.getItem("allResources")) || {};
-    let tasks = JSON.parse(localStorage.getItem("learningTasks")) || [];
     
     userXP = parseInt(localStorage.getItem("userXP")) || 0;
-    
-    // حساب XP من المهارات
+
     function calculateTotalXP() {
         let totalXP = 0;
-        basicSkills.forEach(skill => {
-            let progress = normalProgress[skill] || 0;
-            totalXP += Math.floor(progress * 10);
-        });
+        basicSkills.forEach(s => { totalXP += Math.floor((normalProgress[s] || 0) * 10); });
         specialSkillsOrder.forEach(skill => {
             for (let sub in skill.subSkills) {
                 let current = specialProgress[skill.name]?.[sub];
                 let levelsArr = skill.subSkills[sub];
                 if (current && levelsArr.includes(current)) {
                     let index = levelsArr.indexOf(current);
-                    let percent = (index / (levelsArr.length - 1)) * 100;
-                    totalXP += Math.floor(percent * 10);
+                    totalXP += Math.floor((index / (levelsArr.length - 1)) * 100 * 10);
                 }
             }
         });
         return totalXP;
     }
 
-    // تحديث المستوى بناءً على XP
     function updateRank() {
         let newIndex = 0;
-        for (let i = RANKS.length - 1; i >= 0; i--) {
-            if (userXP >= RANKS[i].xpRequired) {
-                newIndex = i;
-                break;
-            }
-        }
-        
+        for (let i = RANKS.length-1; i>=0; i--) if (userXP >= RANKS[i].xpRequired) { newIndex = i; break; }
         if (newIndex !== currentRankIndex) {
             currentRankIndex = newIndex;
-            showLevelUpMessage(RANKS[currentRankIndex].name, RANKS[currentRankIndex].icon);
-            const xpCard = document.getElementById('xpCard');
-            xpCard.classList.add('glow');
-            setTimeout(() => xpCard.classList.remove('glow'), 2000);
+            showAchievementToast(`🗡️ رفع المستوى!`, `أصبحت ${RANKS[currentRankIndex].name}`);
+            document.getElementById('xpCard').classList.add('glow');
+            setTimeout(() => document.getElementById('xpCard').classList.remove('glow'), 2000);
         }
-        
         const rank = RANKS[currentRankIndex];
         document.getElementById('rankName').innerHTML = rank.name;
         document.getElementById('rankTitle').innerHTML = rank.en;
         document.getElementById('rankIcon').innerHTML = rank.icon;
-        
         let currentLevelXP = rank.xpRequired;
         let nextLevelXP = rank.nextXp || userXP;
-        let xpInLevel = userXP - currentLevelXP;
-        let xpNeededForNext = (rank.nextXp || userXP) - currentLevelXP;
-        let percent = (xpInLevel / xpNeededForNext) * 100;
-        
+        let percent = ((userXP - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
         document.getElementById('xpBarFill').style.width = Math.min(100, Math.max(0, percent)) + '%';
         document.getElementById('currentXP').innerText = userXP;
-        
         if (rank.nextXp) {
             document.getElementById('nextLevelXP').innerText = rank.nextXp;
-            document.getElementById('nextLevelText').innerHTML = `📈 التالي: ${RANKS[currentRankIndex+1]?.name || 'MAX'} (${rank.nextXp} XP)`;
+            document.getElementById('nextLevelText').innerHTML = `📈 التالي: ${RANKS[currentRankIndex+1]?.name} (${rank.nextXp} XP)`;
         } else {
             document.getElementById('nextLevelXP').innerText = 'MAX';
             document.getElementById('nextLevelText').innerHTML = `👑 أنت في القمة! ${rank.name} 👑`;
         }
     }
 
-    function showLevelUpMessage(rankName, icon) {
-        const toast = document.createElement('div');
-        toast.className = 'achievement-toast';
-        toast.innerHTML = `
-            <span style="font-size: 2rem;">${icon}</span>
-            <div>
-                <div style="font-weight: bold; color: #fbbf24;">🗡️ LEVEL UP! 🗡️</div>
-                <div>لقد أصبحت ${rankName}</div>
-            </div>
-        `;
-        document.body.appendChild(toast);
-        setTimeout(() => {
-            toast.classList.add('fade-out');
-            setTimeout(() => toast.remove(), 500);
-        }, 3000);
-    }
-
-    function showAchievement(achievementName, xpReward) {
-        const toast = document.createElement('div');
-        toast.className = 'achievement-toast';
-        toast.innerHTML = `
-            <span style="font-size: 2rem;">🏆</span>
-            <div>
-                <div style="font-weight: bold; color: #fbbf24;">إنجاز جديد!</div>
-                <div>${achievementName} +${xpReward} XP</div>
-            </div>
-        `;
-        document.body.appendChild(toast);
-        setTimeout(() => {
-            toast.classList.add('fade-out');
-            setTimeout(() => toast.remove(), 3000);
-        }, 3000);
+    function refreshXP() {
+        let newXP = calculateTotalXP();
+        let achievementsXP = achievements.filter(a=>a.achieved).reduce((s,a)=>s+a.xpReward,0);
+        newXP += achievementsXP;
+        if (newXP !== userXP) { userXP = newXP; localStorage.setItem("userXP", userXP); updateRank(); }
+        checkAchievements();
+        if (competitionModeActive) renderCompetition();
     }
 
     function checkAchievements() {
-        let totalXPAdded = 0;
+        let completedCount = basicSkills.filter(s=>normalProgress[s]===100).length;
+        specialSkillsOrder.forEach(s=>{ let all=true; for(let sub in s.subSkills) if(specialProgress[s.name]?.[sub] !== s.subSkills[sub][s.subSkills[sub].length-1]) all=false; if(all) completedCount++; });
+        let hasFirst100 = basicSkills.some(s=>normalProgress[s]===100) || specialSkillsOrder.some(s=>{for(let sub in s.subSkills) if(specialProgress[s.name]?.[sub] === s.subSkills[sub][s.subSkills[sub].length-1]) return true; return false;});
+        let allNormalComplete = basicSkills.every(s=>normalProgress[s]===100);
+        let quranComplete = specialProgress["📖 حفظ القرآن الكريم"]?.["الحفظ الجديد"] === "26-30 جزء" && specialProgress["📖 حفظ القرآن الكريم"]?.["المراجعة"] === "متقن";
         
-        let hasFirst100 = basicSkills.some(s => normalProgress[s] === 100) || 
-            specialSkillsOrder.some(s => {
-                for (let sub in s.subSkills) {
-                    let levelsArr = s.subSkills[sub];
-                    let current = specialProgress[s.name]?.[sub];
-                    if (current === levelsArr[levelsArr.length-1]) return true;
-                }
-                return false;
-            });
-        
-        if (!achievements[0].achieved && hasFirst100) {
-            achievements[0].achieved = true;
-            totalXPAdded += achievements[0].xpReward;
-            showAchievement(achievements[0].name, achievements[0].xpReward);
-        }
-        
-        let completedCount = basicSkills.filter(s => normalProgress[s] === 100).length;
-        specialSkillsOrder.forEach(s => {
-            let allComplete = true;
-            for (let sub in s.subSkills) {
-                let levelsArr = s.subSkills[sub];
-                if (specialProgress[s.name]?.[sub] !== levelsArr[levelsArr.length-1]) allComplete = false;
-            }
-            if (allComplete) completedCount++;
-        });
-        
-        if (!achievements[1].achieved && completedCount >= 5) {
-            achievements[1].achieved = true;
-            totalXPAdded += achievements[1].xpReward;
-            showAchievement(achievements[1].name, achievements[1].xpReward);
-        }
-        
-        if (!achievements[2].achieved && completedCount >= 10) {
-            achievements[2].achieved = true;
-            totalXPAdded += achievements[2].xpReward;
-            showAchievement(achievements[2].name, achievements[2].xpReward);
-        }
-        
-        let allNormalComplete = basicSkills.every(s => normalProgress[s] === 100);
-        if (!achievements[3].achieved && allNormalComplete) {
-            achievements[3].achieved = true;
-            totalXPAdded += achievements[3].xpReward;
-            showAchievement(achievements[3].name, achievements[3].xpReward);
-        }
-        
-        let quranComplete = specialProgress["📖 حفظ القرآن الكريم"]?.["الحفظ الجديد"] === "26-30 جزء" && 
-            specialProgress["📖 حفظ القرآن الكريم"]?.["المراجعة"] === "متقن";
-        if (!achievements[4].achieved && quranComplete) {
-            achievements[4].achieved = true;
-            totalXPAdded += achievements[4].xpReward;
-            showAchievement(achievements[4].name, achievements[4].xpReward);
-        }
-        
-        if (totalXPAdded > 0) {
-            userXP += totalXPAdded;
-            localStorage.setItem("userXP", userXP);
-            localStorage.setItem("achievements", JSON.stringify(achievements));
-            updateRank();
-        }
-    }
-
-    function refreshXP() {
-        let newXP = calculateTotalXP();
-        let achievementsTotalXP = achievements.filter(a => a.achieved).reduce((sum, a) => sum + a.xpReward, 0);
-        newXP += achievementsTotalXP;
-        
-        if (newXP !== userXP) {
-            userXP = newXP;
-            localStorage.setItem("userXP", userXP);
-            updateRank();
-            checkAchievements();
-        }
+        if (!achievements[0].achieved && hasFirst100) { achievements[0].achieved=true; userXP+=achievements[0].xpReward; showAchievementToast("🏆 إنجاز جديد!", achievements[0].name+" +"+achievements[0].xpReward+" XP"); }
+        if (!achievements[1].achieved && completedCount>=5) { achievements[1].achieved=true; userXP+=achievements[1].xpReward; showAchievementToast("🏆 إنجاز جديد!", achievements[1].name+" +"+achievements[1].xpReward+" XP"); }
+        if (!achievements[2].achieved && completedCount>=10) { achievements[2].achieved=true; userXP+=achievements[2].xpReward; showAchievementToast("🏆 إنجاز جديد!", achievements[2].name+" +"+achievements[2].xpReward+" XP"); }
+        if (!achievements[3].achieved && allNormalComplete) { achievements[3].achieved=true; userXP+=achievements[3].xpReward; showAchievementToast("🏆 إنجاز جديد!", achievements[3].name+" +"+achievements[3].xpReward+" XP"); }
+        if (!achievements[4].achieved && quranComplete) { achievements[4].achieved=true; userXP+=achievements[4].xpReward; showAchievementToast("🏆 إنجاز جديد!", achievements[4].name+" +"+achievements[4].xpReward+" XP"); }
+        localStorage.setItem("achievements", JSON.stringify(achievements));
+        localStorage.setItem("userXP", userXP);
+        updateRank();
     }
 
     function getNormalResourceKey(skill) { return `normal_${skill}`; }
     function getSpecialResourceKey(skill, sub, lvl) { return `special_${skill}_${sub}_${lvl}`; }
     
-    function saveAll() {
-        localStorage.setItem("normalProgress", JSON.stringify(normalProgress));
-        localStorage.setItem("specialProgress", JSON.stringify(specialProgress));
-        localStorage.setItem("allResources", JSON.stringify(resources));
-        localStorage.setItem("learningTasks", JSON.stringify(tasks));
-        localStorage.setItem("userXP", userXP);
-        localStorage.setItem("achievements", JSON.stringify(achievements));
+    function saveAll() { 
+        localStorage.setItem("normalProgress", JSON.stringify(normalProgress)); 
+        localStorage.setItem("specialProgress", JSON.stringify(specialProgress)); 
+        localStorage.setItem("allResources", JSON.stringify(resources)); 
+        localStorage.setItem("personalTasks", JSON.stringify(personalTasks));
+        localStorage.setItem("userXP", userXP); 
+        localStorage.setItem("achievements", JSON.stringify(achievements)); 
+        localStorage.setItem("lastUpdateDates", JSON.stringify(lastUpdateDates)); 
     }
     
-    function addNormalResource(skill) {
-        let inp = document.getElementById(`normal-res-${skill.replace(/\s/g, '')}`);
-        if(!inp || !inp.value.trim()) return;
-        let url = inp.value.trim();
-        if(!url.startsWith("http")) url = "https://"+url;
-        let key = getNormalResourceKey(skill);
-        if(!resources[key]) resources[key] = [];
-        resources[key].push(url);
-        saveAll(); renderSkills(); updateStats(); refreshXP();
-        inp.value = "";
-    }
-    
-    function deleteNormalResource(skill, idx) {
-        if(confirm("⚠️ هل أنت متأكد من حذف هذا الرابط نهائياً؟")){
-            let key = getNormalResourceKey(skill);
-            if(resources[key]) resources[key].splice(idx,1);
-            if(resources[key]?.length===0) delete resources[key];
-            saveAll(); renderSkills(); updateStats(); refreshXP();
-        }
-    }
-    
-    function deleteAllNormalResources(skill) {
-        if(confirm(`⚠️ هل تريد حذف جميع روابط "${skill}" نهائياً؟`)){
-            delete resources[getNormalResourceKey(skill)];
-            saveAll(); renderSkills(); updateStats(); refreshXP();
-        }
-    }
-    
-    function addSpecialResource(skill, sub, lvl) {
-        let inp = document.getElementById(`special-res-${skill.replace(/\s/g, '')}-${sub}`);
-        if(!inp || !inp.value.trim()) return;
-        let url = inp.value.trim();
-        if(!url.startsWith("http")) url = "https://"+url;
-        let key = getSpecialResourceKey(skill, sub, lvl);
-        if(!resources[key]) resources[key] = [];
-        resources[key].push(url);
-        saveAll(); renderSkills(); updateStats(); refreshXP();
-        inp.value = "";
-    }
-    
-    function deleteSpecialResource(skill, sub, lvl, idx) {
-        if(confirm("⚠️ هل أنت متأكد من حذف هذا الرابط نهائياً؟")){
-            let key = getSpecialResourceKey(skill, sub, lvl);
-            if(resources[key]) resources[key].splice(idx,1);
-            if(resources[key]?.length===0) delete resources[key];
-            saveAll(); renderSkills(); updateStats(); refreshXP();
-        }
-    }
-    
-    function deleteAllSpecialLevel(skill, sub, lvl) {
-        if(confirm(`⚠️ هل تريد حذف جميع روابط "${skill} - ${sub} - ${lvl}" نهائياً؟`)){
-            delete resources[getSpecialResourceKey(skill, sub, lvl)];
-            saveAll(); renderSkills(); updateStats(); refreshXP();
-        }
-    }
-    
-    function resetNormalSkill(skill) {
-        if(confirm(`🔄 إعادة ضبط "${skill}" إلى 0%؟`)){ 
-            normalProgress[skill]=0; 
-            saveAll(); renderSkills(); updateStats(); refreshXP();
-        }
-    }
-    
-    function resetSubProgress(skill, sub, arr) {
-        if(confirm(`🔄 إعادة ضبط تقدم "${skill} - ${sub}" إلى المستوى الأول (${arr[0]})؟`)){
-            specialProgress[skill][sub] = arr[0];
-            saveAll(); renderSkills(); updateStats(); refreshXP();
-        }
-    }
+    function addNormalResource(skill) { let inp=document.getElementById(`normal-res-${skill.replace(/\s/g,'')}`); if(!inp||!inp.value.trim()) return; let url=inp.value.trim(); if(!url.startsWith("http")) url="https://"+url; let key=getNormalResourceKey(skill); if(!resources[key]) resources[key]=[]; resources[key].push(url); saveAll(); renderSkills(); updateStats(); refreshXP(); inp.value=""; updateLastUpdateDate(skill); renderMissionCenter(); }
+    function deleteNormalResource(skill,idx) { if(confirm("⚠️ حذف الرابط؟")){ let key=getNormalResourceKey(skill); if(resources[key]) resources[key].splice(idx,1); if(resources[key]?.length===0) delete resources[key]; saveAll(); renderSkills(); updateStats(); refreshXP(); } }
+    function addSpecialResource(skill,sub,lvl) { let inp=document.getElementById(`special-res-${skill.replace(/\s/g,'')}-${sub}`); if(!inp||!inp.value.trim()) return; let url=inp.value.trim(); if(!url.startsWith("http")) url="https://"+url; let key=getSpecialResourceKey(skill,sub,lvl); if(!resources[key]) resources[key]=[]; resources[key].push(url); saveAll(); renderSkills(); updateStats(); refreshXP(); inp.value=""; }
+    function deleteSpecialResource(skill,sub,lvl,idx) { if(confirm("⚠️ حذف الرابط؟")){ let key=getSpecialResourceKey(skill,sub,lvl); if(resources[key]) resources[key].splice(idx,1); if(resources[key]?.length===0) delete resources[key]; saveAll(); renderSkills(); updateStats(); refreshXP(); } }
+    function resetNormalSkill(skill) { if(confirm(`🔄 إعادة ضبط "${skill}"؟`)){ normalProgress[skill]=0; saveAll(); renderSkills(); updateStats(); refreshXP(); updateLastUpdateDate(skill); renderMissionCenter(); } }
+    function resetSubProgress(skill,sub,arr) { if(confirm(`🔄 إعادة ضبط "${skill} - ${sub}"؟`)){ specialProgress[skill][sub]=arr[0]; saveAll(); renderSkills(); updateStats(); refreshXP(); updateLastUpdateDate(skill,sub); renderMissionCenter(); } }
     
     function updateStats() {
-        let totalCount = 0, totalSum = 0;
-        basicSkills.forEach(s => { totalSum += normalProgress[s] || 0; totalCount++; });
-        specialSkillsOrder.forEach(sk => {
-            let subSum=0, subC=0;
-            for(let sub in sk.subSkills){
-                let lvl = specialProgress[sk.name]?.[sub];
-                let arr = sk.subSkills[sub];
-                if(lvl && arr.includes(lvl)){
-                    let idx = arr.indexOf(lvl);
-                    subSum += (idx/(arr.length-1))*100;
-                }
-                subC++;
-            }
-            if(subC){ totalSum += subSum; totalCount++; }
-        });
-        let avg = totalCount? Math.round(totalSum/totalCount):0;
-        let completed = basicSkills.filter(s => normalProgress[s]===100).length;
-        specialSkillsOrder.forEach(sk => {
-            let ok=true;
-            for(let sub in sk.subSkills){
-                let arr = sk.subSkills[sub];
-                if(specialProgress[sk.name]?.[sub] !== arr[arr.length-1]) ok=false;
-            }
-            if(ok) completed++;
-        });
-        let tasksDone = tasks.filter(t=>t.done).length;
-        document.getElementById("statsArea").innerHTML = `
-            <div class="stat-box">📊 متوسط التقدم: ${avg}%</div>
-            <div class="stat-box">🏆 مهارات كاملة: ${completed}/${totalCount}</div>
-            <div class="stat-box">✅ مهام منجزة: ${tasksDone}/${tasks.length}</div>
-        `;
+        let totalCount=0, totalSum=0;
+        basicSkills.forEach(s=>{ totalSum+=normalProgress[s]||0; totalCount++; });
+        specialSkillsOrder.forEach(sk=>{ let subSum=0,subC=0; for(let sub in sk.subSkills){ let lvl=specialProgress[sk.name]?.[sub]; let arr=sk.subSkills[sub]; if(lvl && arr.includes(lvl)) subSum+=(arr.indexOf(lvl)/(arr.length-1))*100; subC++; } if(subC){ totalSum+=subSum; totalCount++; } });
+        let avg=totalCount?Math.round(totalSum/totalCount):0;
+        let completed=basicSkills.filter(s=>normalProgress[s]===100).length;
+        specialSkillsOrder.forEach(sk=>{ let ok=true; for(let sub in sk.subSkills) if(specialProgress[sk.name]?.[sub] !== sk.subSkills[sub][sk.subSkills[sub].length-1]) ok=false; if(ok) completed++; });
+        document.getElementById("statsArea").innerHTML = `<div class="stat-box">📊 متوسط التقدم: ${avg}%</div><div class="stat-box">🏆 مهارات كاملة: ${completed}/${totalCount}</div><div class="stat-box">✅ مهام منجزة: ${personalTasks.filter(t=>t.completed).length}/${personalTasks.length}</div>`;
     }
     
     function renderSkills() {
-        const grid = document.getElementById("skillsGrid");
-        if(!grid) return;
-        grid.innerHTML = "";
-        
+        const grid = document.getElementById("skillsGrid"); if(!grid) return; grid.innerHTML = "";
         basicSkills.forEach(skill => {
-            let cur = normalProgress[skill] || 0;
-            let resKey = getNormalResourceKey(skill);
-            let resList = resources[resKey] || [];
-            let levelsHtml = normalLevels.map(lvl => `<button class="level-btn ${cur===lvl ? 'active-level' : ''}" data-skill="${skill}" data-level="${lvl}">${lvl}%</button>`).join('');
-            let resourcesHtml = resList.map((r,i)=>`<li class="resource-item"><a href="${r}" target="_blank" class="resource-link">📖 ${r.length>35?r.slice(0,35)+'...':r}</a><button class="delete-normal-resource" data-skill="${skill}" data-idx="${i}">✖</button></li>`).join('');
+            let cur = normalProgress[skill]||0;
+            let resKey=getNormalResourceKey(skill); let resList=resources[resKey]||[];
+            let levelsHtml = normalLevels.map(lvl => `<button class="level-btn ${cur===lvl?'active-level':''}" data-skill="${skill}" data-level="${lvl}">${lvl}%</button>`).join('');
+            let resourcesHtml = resList.map((r,i)=>`<li class="resource-item"><a href="${r}" target="_blank">📖 ${r.length>35?r.slice(0,35)+'...':r}</a><button class="delete-normal-resource" data-skill="${skill}" data-idx="${i}">✖</button></li>`).join('');
             let card = document.createElement("div"); card.className="skill-card";
-            card.innerHTML = `
-                <div class="skill-header"><span class="skill-name">${skill}</span><button class="reset-skill-btn" data-skill-normal="${skill}">🔄 إعادة ضبط التقدم</button></div>
-                <div class="level-buttons">${levelsHtml}</div>
-                <div class="shared-resource-section"><div class="shared-resource-label">📚 مصادر مشتركة:</div>
-                <div class="resource-input-group"><input type="text" id="normal-res-${skill.replace(/\s/g, '')}" class="resource-input" placeholder="رابط فيديو/ملف"><button class="add-normal-resource" data-skill="${skill}">➕ أضف</button>${resList.length?`<button class="reset-links-btn" data-skill-normal-resetlinks="${skill}" style="background:#6d28d9;">🗑️ مسح الكل</button>`:''}</div>
-                <ul class="resources-list">${resourcesHtml}</ul></div>
-            `;
+            card.innerHTML = `<div class="skill-header"><span class="skill-name">${skill}</span><button class="reset-skill-btn" data-skill-normal="${skill}">🔄 إعادة ضبط التقدم</button></div><div class="level-buttons">${levelsHtml}</div><div class="shared-resource-section"><div class="shared-resource-label">📚 مصادر مشتركة:</div><div class="resource-input-group"><input type="text" id="normal-res-${skill.replace(/\s/g,'')}" class="resource-input" placeholder="رابط فيديو/ملف"><button class="add-normal-resource" data-skill="${skill}">➕ أضف</button>${resList.length?`<button class="reset-links-btn" data-skill-normal-resetlinks="${skill}" style="background:#6d28d9;">🗑️ مسح الكل</button>`:''}</div><ul class="resources-list">${resourcesHtml}</ul></div>`;
             grid.appendChild(card);
         });
-        
         specialSkillsOrder.forEach(skillObj => {
             let card = document.createElement("div"); card.className="skill-card";
             let inner = `<div class="skill-header"><span class="skill-name">${skillObj.name}</span></div>`;
@@ -858,91 +1006,47 @@
                 let btns = levelsArr.map(lvl => `<button class="level-btn special-level ${current===lvl?'active-level':''}" data-skill-name="${skillObj.name}" data-sub-skill="${subName}" data-level="${lvl}">${lvl}</button>`).join('');
                 let resKey = getSpecialResourceKey(skillObj.name, subName, current);
                 let resList = resources[resKey] || [];
-                let resHtml = resList.map((r,i)=>`<li class="resource-item"><a href="${r}" target="_blank" class="resource-link">📖 ${r.length>35?r.slice(0,35)+'...':r}</a><button class="delete-special-resource" data-skill-name="${skillObj.name}" data-sub-skill="${subName}" data-level="${current}" data-idx="${i}">✖</button></li>`).join('');
-                inner += `<div class="sub-skill-block"><div class="sub-skill-title"><span>📌 ${subName}</span><div><button class="level-control-btn reset-progress reset-progress-special" data-skill-name="${skillObj.name}" data-sub-skill="${subName}">🔄 إعادة ضبط التقدم</button><button class="level-control-btn reset-links reset-links-special" data-skill-name="${skillObj.name}" data-sub-skill="${subName}" data-level="${current}">🗑️ مسح روابط هذا المستوى</button></div></div>
-                <div class="level-buttons">${btns}</div>
-                <div class="resource-section-special"><div class="resource-label" style="font-size:0.7rem;">📚 روابط خاصة بهذا المستوى (${current}):</div>
-                <div class="resource-input-group"><input type="text" id="special-res-${skillObj.name.replace(/\s/g, '')}-${subName}" class="resource-input" placeholder="رابط فيديو/تلاوة/تفسير"><button class="add-special-resource" data-skill-name="${skillObj.name}" data-sub-skill="${subName}" data-level="${current}">➕ أضف</button></div>
-                <ul class="resources-list">${resHtml}</ul></div></div>`;
+                let resHtml = resList.map((r,i)=>`<li class="resource-item"><a href="${r}" target="_blank">📖 ${r.length>35?r.slice(0,35)+'...':r}</a><button class="delete-special-resource" data-skill-name="${skillObj.name}" data-sub-skill="${subName}" data-level="${current}" data-idx="${i}">✖</button></li>`).join('');
+                inner += `<div class="sub-skill-block"><div class="sub-skill-title"><span>📌 ${subName}</span><div><button class="level-control-btn reset-progress reset-progress-special" data-skill-name="${skillObj.name}" data-sub-skill="${subName}">🔄 إعادة ضبط التقدم</button><button class="level-control-btn reset-links reset-links-special" data-skill-name="${skillObj.name}" data-sub-skill="${subName}" data-level="${current}">🗑️ مسح روابط هذا المستوى</button></div></div><div class="level-buttons">${btns}</div><div class="resource-section-special"><div class="resource-label" style="font-size:0.7rem;">📚 روابط خاصة بهذا المستوى (${current}):</div><div class="resource-input-group"><input type="text" id="special-res-${skillObj.name.replace(/\s/g,'')}-${subName}" class="resource-input" placeholder="رابط فيديو/تلاوة/تفسير"><button class="add-special-resource" data-skill-name="${skillObj.name}" data-sub-skill="${subName}" data-level="${current}">➕ أضف</button></div><ul class="resources-list">${resHtml}</ul></div></div>`;
             }
-            card.innerHTML = inner;
-            grid.appendChild(card);
+            card.innerHTML = inner; grid.appendChild(card);
         });
-        
         attachEvents();
     }
     
     function attachEvents() {
-        document.querySelectorAll(".level-btn[data-skill]").forEach(btn=>btn.addEventListener("click",e=>{
-            let s=btn.getAttribute("data-skill"), lvl=parseInt(btn.getAttribute("data-level"));
-            if(s){ normalProgress[s]=lvl; saveAll(); renderSkills(); updateStats(); refreshXP(); }
-        }));
+        document.querySelectorAll(".level-btn[data-skill]").forEach(btn=>btn.addEventListener("click",e=>{ let s=btn.getAttribute("data-skill"), lvl=parseInt(btn.getAttribute("data-level")); if(s){ normalProgress[s]=lvl; saveAll(); renderSkills(); updateStats(); refreshXP(); updateLastUpdateDate(s); renderMissionCenter(); } }));
         document.querySelectorAll(".reset-skill-btn[data-skill-normal]").forEach(btn=>btn.addEventListener("click",e=>resetNormalSkill(btn.getAttribute("data-skill-normal"))));
         document.querySelectorAll(".add-normal-resource").forEach(btn=>btn.addEventListener("click",e=>addNormalResource(btn.getAttribute("data-skill"))));
         document.querySelectorAll(".delete-normal-resource").forEach(btn=>btn.addEventListener("click",e=>deleteNormalResource(btn.getAttribute("data-skill"), parseInt(btn.getAttribute("data-idx")))));
-        document.querySelectorAll(".reset-links-btn[data-skill-normal-resetlinks]").forEach(btn=>btn.addEventListener("click",e=>deleteAllNormalResources(btn.getAttribute("data-skill-normal-resetlinks"))));
-        
-        document.querySelectorAll(".special-level").forEach(btn=>btn.addEventListener("click",e=>{
-            let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level");
-            if(sn && sub){ specialProgress[sn][sub]=lvl; saveAll(); renderSkills(); updateStats(); refreshXP(); }
-        }));
-        document.querySelectorAll(".reset-progress-special").forEach(btn=>btn.addEventListener("click",e=>{
-            let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill");
-            let found = specialSkillsOrder.find(s=>s.name===sn);
-            if(found && found.subSkills[sub]) resetSubProgress(sn, sub, found.subSkills[sub]);
-        }));
-        document.querySelectorAll(".reset-links-special").forEach(btn=>btn.addEventListener("click",e=>{
-            let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level");
-            if(sn && sub && lvl) deleteAllSpecialLevel(sn, sub, lvl);
-        }));
-        document.querySelectorAll(".add-special-resource").forEach(btn=>btn.addEventListener("click",e=>{
-            let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level");
-            addSpecialResource(sn, sub, lvl);
-        }));
-        document.querySelectorAll(".delete-special-resource").forEach(btn=>btn.addEventListener("click",e=>{
-            let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level"), idx=parseInt(btn.getAttribute("data-idx"));
-            deleteSpecialResource(sn, sub, lvl, idx);
-        }));
-    }
-    
-    function renderTasks() {
-        let ul = document.getElementById("taskList");
-        if(!ul) return;
-        if(tasks.length===0){ ul.innerHTML="<li style='text-align:center;'>✨ لا توجد مهام | أضف مهمة جديدة</li>"; return; }
-        ul.innerHTML = tasks.map((t,i)=>`<li style="text-decoration:${t.done?'line-through':'none'}; opacity:${t.done?0.6:1}"><span>${t.name}</span><div><button class="toggleTask" data-idx="${i}">${t.done?'↩️ تراجع':'✔ أنجزت'}</button><button class="deleteTask" data-idx="${i}">🗑</button></div></li>`).join('');
-        document.querySelectorAll(".toggleTask").forEach(btn=>btn.addEventListener("click",e=>{let idx=btn.getAttribute("data-idx"); tasks[idx].done=!tasks[idx].done; saveAll(); renderTasks(); updateStats(); refreshXP();}));
-        document.querySelectorAll(".deleteTask").forEach(btn=>btn.addEventListener("click",e=>{if(confirm("⚠️ حذف المهمة؟")){ let idx=btn.getAttribute("data-idx"); tasks.splice(idx,1); saveAll(); renderTasks(); updateStats(); refreshXP();}}));
+        document.querySelectorAll(".reset-links-btn[data-skill-normal-resetlinks]").forEach(btn=>btn.addEventListener("click",e=>{ let skill=btn.getAttribute("data-skill-normal-resetlinks"); if(confirm(`⚠️ حذف كل روابط "${skill}"؟`)){ delete resources[getNormalResourceKey(skill)]; saveAll(); renderSkills(); updateStats(); refreshXP(); } }));
+        document.querySelectorAll(".special-level").forEach(btn=>btn.addEventListener("click",e=>{ let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level"); if(sn && sub){ specialProgress[sn][sub]=lvl; saveAll(); renderSkills(); updateStats(); refreshXP(); updateLastUpdateDate(sn, sub); renderMissionCenter(); } }));
+        document.querySelectorAll(".reset-progress-special").forEach(btn=>btn.addEventListener("click",e=>{ let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"); let found = specialSkillsOrder.find(s=>s.name===sn); if(found && found.subSkills[sub]) resetSubProgress(sn, sub, found.subSkills[sub]); }));
+        document.querySelectorAll(".reset-links-special").forEach(btn=>btn.addEventListener("click",e=>{ let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level"); if(confirm(`⚠️ حذف كل روابط "${sn} - ${sub} - ${lvl}"؟`)){ delete resources[getSpecialResourceKey(sn, sub, lvl)]; saveAll(); renderSkills(); updateStats(); refreshXP(); } }));
+        document.querySelectorAll(".add-special-resource").forEach(btn=>btn.addEventListener("click",e=>{ let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level"); addSpecialResource(sn, sub, lvl); }));
+        document.querySelectorAll(".delete-special-resource").forEach(btn=>btn.addEventListener("click",e=>{ let sn=btn.getAttribute("data-skill-name"), sub=btn.getAttribute("data-sub-skill"), lvl=btn.getAttribute("data-level"), idx=parseInt(btn.getAttribute("data-idx")); deleteSpecialResource(sn, sub, lvl, idx); }));
     }
     
     function initData() {
-        basicSkills.forEach(s => { if (normalProgress[s] === undefined) normalProgress[s] = 0; });
-        specialSkillsOrder.forEach(skill => {
-            if (!specialProgress[skill.name]) specialProgress[skill.name] = {};
-            for (let sub in skill.subSkills) {
-                if (!specialProgress[skill.name][sub]) {
-                    specialProgress[skill.name][sub] = skill.subSkills[sub][0];
-                }
-            }
-        });
+        basicSkills.forEach(s=>{ if(normalProgress[s]===undefined) normalProgress[s]=0; });
+        specialSkillsOrder.forEach(skill=>{ if(!specialProgress[skill.name]) specialProgress[skill.name]={}; for(let sub in skill.subSkills) if(!specialProgress[skill.name][sub]) specialProgress[skill.name][sub]=skill.subSkills[sub][0]; });
     }
     
-    document.getElementById("addTask")?.addEventListener("click",()=>{
-        let inp=document.getElementById("taskName");
-        if(inp.value.trim()){ tasks.push({name:inp.value.trim(),done:false}); saveAll(); renderTasks(); updateStats(); refreshXP(); inp.value=""; }
+    document.getElementById("addTask")?.addEventListener("click",()=>{ let inp=document.getElementById("taskName"); if(inp.value.trim()){ addPersonalTask(inp.value.trim()); inp.value=""; } });
+    document.getElementById("quickAddTaskBtn")?.addEventListener("click",()=>{ let inp=document.getElementById("quickTaskInput"); if(inp.value.trim()){ addPersonalTask(inp.value.trim()); inp.value=""; } });
+    document.getElementById("quickTaskInput")?.addEventListener("keypress",(e)=>{ if(e.key==="Enter"){ let inp=document.getElementById("quickTaskInput"); if(inp.value.trim()){ addPersonalTask(inp.value.trim()); inp.value=""; } } });
+    document.getElementById("taskName")?.addEventListener("keypress",(e)=>{ if(e.key==="Enter"){ let inp=document.getElementById("taskName"); if(inp.value.trim()){ addPersonalTask(inp.value.trim()); inp.value=""; } } });
+    
+    document.getElementById("resetAllBtn")?.addEventListener("click",()=>{ 
+        if(confirm("⚠️ إعادة ضبط كل شيء؟")){ 
+            basicSkills.forEach(s=>normalProgress[s]=0); 
+            specialSkillsOrder.forEach(skill=>{ for(let sub in skill.subSkills) specialProgress[skill.name][sub]=skill.subSkills[sub][0]; }); 
+            resources={}; personalTasks=[]; userXP=0; achievements=ACHIEVEMENTS.map(a=>({...a,achieved:false})); lastUpdateDates={}; 
+            saveAll(); renderSkills(); updateStats(); refreshXP(); renderMissionCenter(); 
+        } 
     });
     
-    document.getElementById("resetAllBtn")?.addEventListener("click",()=>{
-        if(confirm("⚠️ تحذير نهائي: سيتم حذف كل تقدم المهارات، جميع المصادر، وجميع المهام. هل أنت متأكد؟")){
-            basicSkills.forEach(s=>normalProgress[s]=0);
-            specialSkillsOrder.forEach(skill=>{
-                for(let sub in skill.subSkills) specialProgress[skill.name][sub]=skill.subSkills[sub][0];
-            });
-            resources={}; tasks=[]; userXP=0; achievements = ACHIEVEMENTS.map(a => ({ ...a, achieved: false }));
-            saveAll(); renderSkills(); renderTasks(); updateStats(); refreshXP();
-        }
-    });
-    
-    initData(); renderSkills(); renderTasks(); updateStats(); refreshXP();
+    initData(); renderSkills(); updateStats(); refreshXP(); renderMissionCenter();
 </script>
 </body>
 </html>
