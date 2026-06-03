@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>SmartBoard Pro - نظام مكافآت متطور</title>
+    <title>SmartBoard Pro - نظام متكامل مع مكافآت الجلسات</title>
     <style>
         * {
             margin: 0;
@@ -214,7 +214,6 @@
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         .sound-status { position: fixed; bottom: 20px; right: 20px; background: #1a0a2e; padding: 5px 12px; border-radius: 40px; font-size: 0.7rem; border: 1px solid #fbbf24; z-index: 1000; }
 
-        /* سجل الجلسات */
         .sessions-history {
             margin-top: 15px;
             background: #0f1622aa;
@@ -290,7 +289,6 @@
                 <ul class="mission-list" id="suggestedTasksList"><li class="empty-message">✨ لا توجد مهارات مهملة</li></ul>
             </div>
             
-            <!-- سجل الجلسات -->
             <div class="sessions-history">
                 <div class="history-title">
                     <span>📜 سجل الجلسات (آخر 10)</span>
@@ -340,7 +338,7 @@
 
 <script>
     // =====================================================
-    // نظام المكافآت المتطور + سجل الجلسات
+    // نظام المكافآت المتطور + سجل الجلسات (نسخة مصححة)
     // =====================================================
     
     // مكافآت حسب طول الجلسة (بالدقائق)
@@ -355,12 +353,13 @@
     let sessionHistory = JSON.parse(localStorage.getItem("sessionHistory")) || [];
     let sessionStreak = parseInt(localStorage.getItem("sessionStreak")) || 0;
     let lastSessionDate = localStorage.getItem("lastSessionDate") || null;
+    let totalSessionXP = parseInt(localStorage.getItem("totalSessionXP")) || 0;
     
     // تحديث عرض مكافأة الجلسة حسب المدة المختارة
     function updateRewardInfo() {
         const reward = sessionRewards[currentPreset];
-        const streakBonus = sessionStreak > 0 ? ` + ${Math.min(sessionStreak * 5, 50)} XP مكافأة سلسلة` : '';
-        document.getElementById('rewardInfo').innerHTML = `🎁 عند الإكمال: +${reward.base} XP أساسي${streakBonus}`;
+        const streakBonus = getStreakBonus();
+        document.getElementById('rewardInfo').innerHTML = `🎁 عند الإكمال: +${reward.base} XP أساسي + ${streakBonus} XP مكافأة سلسلة = ${reward.base + streakBonus} XP`;
     }
     
     // حساب مكافأة السلسلة (الحد الأقصى 50 XP إضافي)
@@ -383,26 +382,28 @@
             total: xpEarned + bonus
         });
         
-        // الحفاظ على آخر 10 جلسات فقط
         if (sessionHistory.length > 10) sessionHistory.pop();
         
         localStorage.setItem("sessionHistory", JSON.stringify(sessionHistory));
+        
+        // تحديث إجمالي XP من الجلسات
+        totalSessionXP += (xpEarned + bonus);
+        localStorage.setItem("totalSessionXP", totalSessionXP);
+        
         renderSessionHistory();
         
-        // تحديث السلسلة
+        // تحديث السلسلة (فقط إذا كانت الجلسة في يوم مختلف)
         const today = now.toDateString();
-        if (lastSessionDate === today) {
-            // نفس اليوم لا يزيد السلسلة
-        } else if (lastSessionDate && (new Date(lastSessionDate).getTime() + 86400000) >= now.getTime()) {
-            // يوم متتالي
-            sessionStreak++;
-        } else {
-            // بداية سلسلة جديدة
-            sessionStreak = 1;
+        if (lastSessionDate !== today) {
+            if (lastSessionDate && (new Date(lastSessionDate).getTime() + 86400000) >= now.getTime()) {
+                sessionStreak++;
+            } else {
+                sessionStreak = 1;
+            }
+            lastSessionDate = today;
+            localStorage.setItem("sessionStreak", sessionStreak);
+            localStorage.setItem("lastSessionDate", lastSessionDate);
         }
-        lastSessionDate = today;
-        localStorage.setItem("sessionStreak", sessionStreak);
-        localStorage.setItem("lastSessionDate", lastSessionDate);
         updateStreakDisplay();
         updateRewardInfo();
     }
@@ -423,7 +424,7 @@
     
     function updateStreakDisplay() {
         const streakBadge = document.getElementById('streakBadge');
-        streakBadge.innerHTML = `🔥 السلسلة: ${sessionStreak}`;
+        streakBadge.innerHTML = `🔥 السلسلة: ${sessionStreak} (${getStreakBonus()} XP إضافي)`;
         updateRewardInfo();
     }
     
@@ -431,7 +432,7 @@
     function manualSyncXP() {
         const calculatedXP = calculateTotalXPFromSkills();
         const achievementsXP = achievements.filter(a=>a.achieved).reduce((s,a)=>s+a.xpReward,0);
-        const sessionsXP = sessionHistory.reduce((sum, s) => sum + s.total, 0);
+        const sessionsXP = totalSessionXP;
         const expectedXP = calculatedXP + achievementsXP + sessionsXP;
         
         const currentXP = userXP;
@@ -459,6 +460,7 @@
         alert(message);
         refreshXP();
         renderMissionCenter();
+        updateStats();
     }
     
     function calculateTotalXPFromSkills() {
@@ -588,16 +590,21 @@
         const streakBonus = getStreakBonus();
         const totalXPGained = reward.base + streakBonus;
         
-        // إضافة XP
+        // إضافة XP إلى المتغير العام
         userXP += totalXPGained;
         localStorage.setItem("userXP", userXP);
         
-        // تسجيل الجلسة
+        // تحديث إجمالي XP من الجلسات
+        totalSessionXP += totalXPGained;
+        localStorage.setItem("totalSessionXP", totalSessionXP);
+        
+        // تسجيل الجلسة في السجل
         addSessionToHistory(currentPreset, reward.base, streakBonus);
         
         // تحديث الواجهة
         updateRank();
         refreshXP();
+        updateStats();
         
         // إشعار
         sendNotification("⏰ جلسة تركيز مكتملة!", `🎁 +${totalXPGained} XP (${reward.base} + ${streakBonus} مكافأة سلسلة)`, "🏆");
@@ -637,7 +644,7 @@
     document.getElementById('timerResetBtn').addEventListener('click', () => { if (timerInterval) clearInterval(timerInterval); timerRunning = false; timerSeconds = currentPreset * 60; updateTimerDisplay(); document.title = originalTitle; preAlertTriggered = false; preAlertShown = false; });
     
     // =====================================================
-    // باقي الكود (المهارات، المهام، التنافس - مختصر)
+    // باقي الكود (المهارات، المهام، التنافس)
     // =====================================================
     const focusModeBtn = document.getElementById('focusModeBtn');
     focusModeBtn.addEventListener('click', () => {
@@ -706,7 +713,7 @@
     const competitionPanel = document.getElementById('competitionPanel');
     competitionModeBtn.addEventListener('click', () => { competitionModeActive = !competitionModeActive; if (competitionModeActive) { competitionPanel.style.display = 'block'; competitionModeBtn.classList.add('active'); renderCompetition(); } else { competitionPanel.style.display = 'none'; competitionModeBtn.classList.remove('active'); } });
     
-    // المهام والمهارات (نفس الكود السابق ولكن مختصر)
+    // المهام والمهارات
     let personalTasks = JSON.parse(localStorage.getItem("personalTasks")) || [];
     let lastUpdateDates = JSON.parse(localStorage.getItem("lastUpdateDates")) || {};
     
@@ -789,6 +796,7 @@
     let resources = JSON.parse(localStorage.getItem("allResources")) || {};
     
     userXP = parseInt(localStorage.getItem("userXP")) || 0;
+    totalSessionXP = parseInt(localStorage.getItem("totalSessionXP")) || 0;
     
     function updateRank() {
         let newIndex = 0;
@@ -851,6 +859,7 @@
         localStorage.setItem("userXP", userXP); 
         localStorage.setItem("achievements", JSON.stringify(achievements)); 
         localStorage.setItem("lastUpdateDates", JSON.stringify(lastUpdateDates)); 
+        localStorage.setItem("totalSessionXP", totalSessionXP);
     }
     
     function addNormalResource(skill) { let inp=document.getElementById(`normal-res-${skill.replace(/\s/g,'')}`); if(!inp||!inp.value.trim()) return; let url=inp.value.trim(); if(!url.startsWith("http")) url="https://"+url; let key=getNormalResourceKey(skill); if(!resources[key]) resources[key]=[]; resources[key].push(url); saveAll(); renderSkills(); updateStats(); refreshXP(); inp.value=""; updateLastUpdateDate(skill); renderMissionCenter(); }
@@ -924,9 +933,10 @@
         if(confirm("⚠️ إعادة ضبط كل شيء؟")){ 
             basicSkills.forEach(s=>normalProgress[s]=0); 
             specialSkillsOrder.forEach(skill=>{ for(let sub in skill.subSkills) specialProgress[skill.name][sub]=skill.subSkills[sub][0]; }); 
-            resources={}; personalTasks=[]; userXP=0; achievements=ACHIEVEMENTS.map(a=>({...a,achieved:false})); lastUpdateDates={}; sessionHistory=[]; sessionStreak=0; lastSessionDate=null;
+            resources={}; personalTasks=[]; userXP=0; achievements=ACHIEVEMENTS.map(a=>({...a,achieved:false})); lastUpdateDates={}; sessionHistory=[]; sessionStreak=0; lastSessionDate=null; totalSessionXP=0;
             localStorage.clear();
-            saveAll(); localStorage.setItem("sessionHistory", JSON.stringify(sessionHistory)); renderSessionHistory(); updateStreakDisplay();
+            saveAll(); localStorage.setItem("sessionHistory", JSON.stringify(sessionHistory)); localStorage.setItem("totalSessionXP", totalSessionXP);
+            renderSessionHistory(); updateStreakDisplay();
             renderSkills(); updateStats(); refreshXP(); renderMissionCenter(); 
             sendNotification("🔄 إعادة ضبط النظام", "تم مسح جميع البيانات بنجاح", "⚙️");
         } 
