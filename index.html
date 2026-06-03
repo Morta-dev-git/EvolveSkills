@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>SmartBoard Pro - إنذار غواصات</title>
+    <title>SmartBoard Pro - نظام مكافآت متطور</title>
     <style>
         * {
             margin: 0;
@@ -42,15 +42,6 @@
             display: none !important;
         }
 
-        @keyframes tabFlash {
-            0% { background-color: transparent; }
-            50% { background-color: rgba(239, 68, 68, 0.4); }
-            100% { background-color: transparent; }
-        }
-        body.flash-tab {
-            animation: tabFlash 0.2s ease-in-out 8;
-        }
-
         .mode-buttons {
             display: flex;
             gap: 10px;
@@ -66,18 +57,21 @@
             padding: 6px 16px;
             cursor: pointer;
             font-size: 0.8rem;
-            transition: all 0.2s;
             color: #e0d0ff;
         }
 
-        .mode-btn.active {
-            background: #7c3aed;
-            border-color: #fbbf24;
-        }
+        .mode-btn.active { background: #7c3aed; border-color: #fbbf24; }
+        .mode-btn.focus-active { background: #10b981; }
 
-        .mode-btn.focus-active {
-            background: #10b981;
-            border-color: #fbbf24;
+        .sync-btn {
+            background: #fbbf24;
+            color: #1a0a2e;
+            border: none;
+            border-radius: 40px;
+            padding: 6px 16px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
         }
 
         .notification-settings {
@@ -90,40 +84,9 @@
             flex-wrap: wrap;
         }
 
-        .notification-settings label {
-            font-size: 0.7rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .test-notif-btn, .activate-sound-btn {
-            background: #fbbf24;
-            color: #1a0a2e;
-            border: none;
-            border-radius: 40px;
-            padding: 4px 12px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .activate-sound-btn {
-            background: #10b981;
-            color: white;
-        }
-
-        .sound-activated {
-            background: #10b981;
-            animation: pulse 1s ease;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
+        .notification-settings label { font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .test-notif-btn, .activate-sound-btn { background: #fbbf24; color: #1a0a2e; border: none; border-radius: 40px; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
+        .activate-sound-btn { background: #10b981; color: white; }
 
         .stop-alert-btn {
             background: #ef4444;
@@ -135,7 +98,6 @@
             font-weight: bold;
             cursor: pointer;
             animation: alertPulse 0.8s infinite;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.9);
         }
 
         @keyframes alertPulse {
@@ -152,73 +114,14 @@
             border: 1px solid #fbbf24;
         }
 
-        .comp-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .comp-card {
-            background: #1a0a2e;
-            border-radius: 16px;
-            padding: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
+        .comp-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+        .comp-card { background: #1a0a2e; border-radius: 16px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .comp-improvement { color: #10b981; font-weight: bold; }
         .comp-decline { color: #ef4444; font-weight: bold; }
 
-        .personal-best-toast {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            color: #1a0a2e;
-            border-radius: 60px;
-            padding: 20px 40px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            z-index: 2000;
-            animation: popIn 0.5s ease forwards;
-            text-align: center;
-            white-space: nowrap;
-        }
-
-        @keyframes popIn {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-
-        .timer-settings {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-
-        .timer-preset {
-            background: #2d1a3e;
-            border: none;
-            border-radius: 40px;
-            padding: 4px 12px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            color: #e0d0ff;
-        }
-
-        .timer-preset.active {
-            background: #7c3aed;
-        }
+        .timer-settings { display: flex; gap: 8px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+        .timer-preset { background: #2d1a3e; border: none; border-radius: 40px; padding: 4px 12px; font-size: 0.7rem; cursor: pointer; color: #e0d0ff; }
+        .timer-preset.active { background: #7c3aed; }
 
         .hero {
             text-align: center;
@@ -234,123 +137,22 @@
         .hero .line3 { font-size: 1.4rem; font-weight: 700; color: #e2e8f0; border-top: 2px solid rgba(170, 102, 255, 0.6); display: inline-block; padding-top: 12px; }
 
         .dashboard { max-width: 1600px; margin: auto; }
-        
-        .card {
-            background: rgba(20, 8, 30, 0.88);
-            backdrop-filter: blur(8px);
-            border-radius: 32px;
-            padding: 22px;
-            margin-bottom: 22px;
-            border: 1px solid rgba(170, 102, 255, 0.4);
-        }
+        .card { background: rgba(20, 8, 30, 0.88); backdrop-filter: blur(8px); border-radius: 32px; padding: 22px; margin-bottom: 22px; border: 1px solid rgba(170, 102, 255, 0.4); }
 
-        .tools-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 25px;
-        }
+        .tools-container { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 25px; }
+        .timer-card { background: linear-gradient(135deg, #0a0a1a, #050510); border-radius: 28px; padding: 16px 24px; flex: 1; min-width: 280px; border: 1px solid #fbbf24; }
+        .timer-display { font-size: 2.5rem; font-weight: 800; text-align: center; font-family: monospace; color: #fbbf24; letter-spacing: 5px; }
+        .timer-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 12px; }
+        .timer-btn { background: #7c3aed; border: none; border-radius: 40px; padding: 6px 16px; cursor: pointer; font-size: 0.8rem; color: white; }
 
-        .timer-card {
-            background: linear-gradient(135deg, #0a0a1a, #050510);
-            border-radius: 28px;
-            padding: 16px 24px;
-            flex: 1;
-            min-width: 280px;
-            border: 1px solid #fbbf24;
-        }
-
-        .timer-display {
-            font-size: 2.5rem;
-            font-weight: 800;
-            text-align: center;
-            font-family: monospace;
-            color: #fbbf24;
-            letter-spacing: 5px;
-        }
-
-        .timer-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 12px;
-        }
-
-        .timer-btn {
-            background: #7c3aed;
-            border: none;
-            border-radius: 40px;
-            padding: 6px 16px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            color: white;
-        }
-
-        .mission-card {
-            background: linear-gradient(135deg, #0a0a1a, #050510);
-            border-radius: 28px;
-            padding: 16px 24px;
-            flex: 2;
-            min-width: 350px;
-            border: 1px solid #fbbf24;
-        }
-
-        .mission-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .add-task-mini {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .add-task-mini input {
-            padding: 6px 12px;
-            border-radius: 60px;
-            border: 1px solid #8b5cf6;
-            background: #1a0a2e;
-            color: white;
-            font-size: 0.75rem;
-            width: 180px;
-        }
-
-        .mission-section {
-            margin-top: 12px;
-        }
-
-        .section-title {
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #fbbf24;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .mission-list {
-            list-style: none;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-
-        .mission-item {
-            background: #1a0a2e;
-            margin: 5px 0;
-            padding: 8px 12px;
-            border-radius: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-        }
-
+        .mission-card { background: linear-gradient(135deg, #0a0a1a, #050510); border-radius: 28px; padding: 16px 24px; flex: 2; min-width: 350px; border: 1px solid #fbbf24; }
+        .mission-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .add-task-mini { display: flex; gap: 8px; align-items: center; }
+        .add-task-mini input { padding: 6px 12px; border-radius: 60px; border: 1px solid #8b5cf6; background: #1a0a2e; color: white; font-size: 0.75rem; width: 180px; }
+        .mission-section { margin-top: 12px; }
+        .section-title { font-size: 0.85rem; font-weight: bold; color: #fbbf24; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .mission-list { list-style: none; max-height: 150px; overflow-y: auto; }
+        .mission-item { background: #1a0a2e; margin: 5px 0; padding: 8px 12px; border-radius: 40px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
         .mission-item.completed { opacity: 0.6; text-decoration: line-through; }
         .mission-actions { display: flex; gap: 8px; }
         .complete-btn { background: #10b981; border: none; border-radius: 40px; padding: 2px 10px; cursor: pointer; font-size: 0.7rem; color: white; }
@@ -368,66 +170,24 @@
             align-items: center;
             justify-content: space-between;
             gap: 20px;
-            transition: all 0.3s ease;
         }
 
-        .xp-card.glow {
-            box-shadow: 0 0 40px rgba(251, 191, 36, 0.8);
-            border-color: #f59e0b;
-        }
-
-        .level-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
+        .xp-card.glow { box-shadow: 0 0 40px rgba(251, 191, 36, 0.8); border-color: #f59e0b; }
+        .level-info { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
         .rank-icon { font-size: 3.5rem; filter: drop-shadow(0 0 10px #fbbf24); }
         .rank-text { text-align: center; }
         .rank-name { font-size: 1.8rem; font-weight: 800; background: linear-gradient(120deg, #fbbf24, #f59e0b); background-clip: text; -webkit-background-clip: text; color: transparent; }
         .rank-title { font-size: 0.8rem; color: #d8b4fe; }
-
         .xp-stats { flex: 1; min-width: 200px; }
         .xp-bar-container { background: #2d1a3e; border-radius: 60px; height: 16px; overflow: hidden; margin: 8px 0; }
         .xp-bar-fill { background: linear-gradient(90deg, #fbbf24, #f59e0b); width: 0%; height: 100%; border-radius: 60px; transition: width 0.5s ease; }
         .xp-numbers { display: flex; justify-content: space-between; font-size: 0.8rem; color: #e0d0ff; }
         .next-level { font-size: 0.7rem; color: #fbbf24; }
 
-        .stats {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-bottom: 25px;
-        }
-
-        .stat-box {
-            background: #1a0a2e;
-            backdrop-filter: blur(4px);
-            padding: 10px 20px;
-            border-radius: 60px;
-            font-weight: bold;
-            border: 1px solid #aa66ff;
-            color: #e5b8ff;
-            font-size: 0.9rem;
-        }
-
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 20px;
-            margin-top: 16px;
-        }
-
-        .skill-card {
-            background: #1e1a2fdd;
-            backdrop-filter: blur(5px);
-            border-radius: 24px;
-            padding: 16px;
-            border: 1px solid #7c3aed;
-            transition: 0.2s;
-        }
-
+        .stats { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 25px; }
+        .stat-box { background: #1a0a2e; backdrop-filter: blur(4px); padding: 10px 20px; border-radius: 60px; font-weight: bold; border: 1px solid #aa66ff; color: #e5b8ff; font-size: 0.9rem; }
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; margin-top: 16px; }
+        .skill-card { background: #1e1a2fdd; backdrop-filter: blur(5px); border-radius: 24px; padding: 16px; border: 1px solid #7c3aed; transition: 0.2s; }
         .skill-card:hover { transform: translateY(-3px); border-color: #a855f7; }
         .skill-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
         .skill-name { font-size: 1.15rem; font-weight: 800; color: #f0e6ff; }
@@ -441,62 +201,41 @@
         .add-resource-btn, .add-normal-resource, .add-special-resource { background: #7c3aed; border: none; border-radius: 60px; padding: 5px 12px; cursor: pointer; font-size: 0.7rem; color: white; font-weight: bold; }
         .delete-resource, .delete-normal-resource, .delete-special-resource { background: none; border: none; color: #f472b6; font-size: 1rem; cursor: pointer; }
         .reset-skill-btn, .reset-progress, .reset-links { background: #2a1a3a; border: 1px solid #7c3aed; border-radius: 30px; padding: 3px 10px; font-size: 0.65rem; cursor: pointer; font-weight: bold; color: #fbbf24; }
-
         .quick-add-section { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
         .quick-add-section input { flex: 1; padding: 8px 15px; border-radius: 60px; border: 1px solid #8b5cf6; background: #1a0a2e; color: white; font-size: 0.85rem; }
-        
         button { background: #7c3aed; color: white; border: none; border-radius: 60px; padding: 5px 12px; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
         footer { text-align: center; margin-top: 30px; opacity: 0.85; font-size: 0.75rem; color: #c0a0e0; }
         hr { border-color: #8b5cf6; margin: 15px 0; }
         .sub-skill-title { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; font-weight: bold; font-size: 0.85rem; color: #fbbf24; }
         h2, h3 { color: #fbbf24; }
 
-        .stop-alert-container {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
+        .stop-alert-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; }
+        .pre-alert { position: fixed; top: 20px; right: 20px; background: #fbbf24; color: #1a0a2e; padding: 10px 20px; border-radius: 60px; font-weight: bold; animation: slideInRight 0.5s ease; z-index: 1000; }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .sound-status { position: fixed; bottom: 20px; right: 20px; background: #1a0a2e; padding: 5px 12px; border-radius: 40px; font-size: 0.7rem; border: 1px solid #fbbf24; z-index: 1000; }
 
-        .pre-alert {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #fbbf24;
-            color: #1a0a2e;
-            padding: 10px 20px;
-            border-radius: 60px;
-            font-weight: bold;
-            animation: slideInRight 0.5s ease;
-            z-index: 1000;
+        /* سجل الجلسات */
+        .sessions-history {
+            margin-top: 15px;
+            background: #0f1622aa;
+            border-radius: 20px;
+            padding: 12px;
         }
-
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .sound-status {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #1a0a2e;
-            padding: 5px 12px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            border: 1px solid #fbbf24;
-            z-index: 1000;
-        }
+        .history-title { font-size: 0.8rem; font-weight: bold; color: #fbbf24; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .history-list { list-style: none; max-height: 150px; overflow-y: auto; font-size: 0.7rem; }
+        .history-item { padding: 5px 8px; border-bottom: 1px solid #3a2a5e; display: flex; justify-content: space-between; }
+        .streak-badge { background: #fbbf24; color: #1a0a2e; border-radius: 40px; padding: 2px 10px; font-size: 0.7rem; font-weight: bold; margin-right: 10px; }
     </style>
 </head>
 <body>
 <div class="dashboard">
     <div class="mode-buttons">
         <div class="notification-settings">
-            <label><input type="checkbox" id="enableNotifications" checked> 🔔 إشعارات المتصفح</label>
+            <label><input type="checkbox" id="enableNotifications" checked> 🔔 إشعارات</label>
             <label><input type="checkbox" id="enableSound" checked> 🔊 صوت الإنذار</label>
-            <button id="activateSoundBtn" class="activate-sound-btn">🔊 تفعيل الصوت أولاً</button>
+            <button id="activateSoundBtn" class="activate-sound-btn">🔊 تفعيل الصوت</button>
             <button id="testNotificationBtn" class="test-notif-btn">🧪 اختبار الإنذار</button>
+            <button id="syncXPBtn" class="sync-btn">🔄 مزامنة XP يدوياً</button>
         </div>
         <button id="focusModeBtn" class="mode-btn">🧘 وضع التركيز العميق</button>
         <button id="competitionModeBtn" class="mode-btn">⚔️ وضع التنافس</button>
@@ -531,7 +270,7 @@
                 <button class="timer-btn" id="timerPauseBtn">⏸ إيقاف</button>
                 <button class="timer-btn" id="timerResetBtn">🔄 إعادة</button>
             </div>
-            <div style="text-align: center; font-size: 0.7rem; margin-top: 8px;">🎁 عند الإكمال: +50 XP + <span id="focusBonusText">25</span> XP إضافي</div>
+            <div style="text-align: center; font-size: 0.7rem; margin-top: 8px;" id="rewardInfo">🎁 عند الإكمال: +50 XP أساسي</div>
         </div>
 
         <div class="mission-card">
@@ -549,6 +288,17 @@
             <div class="mission-section">
                 <div class="section-title">🤖 مهام مقترحة (من مهاراتك المهملة)</div>
                 <ul class="mission-list" id="suggestedTasksList"><li class="empty-message">✨ لا توجد مهارات مهملة</li></ul>
+            </div>
+            
+            <!-- سجل الجلسات -->
+            <div class="sessions-history">
+                <div class="history-title">
+                    <span>📜 سجل الجلسات (آخر 10)</span>
+                    <span class="streak-badge" id="streakBadge">🔥 السلسلة: 0</span>
+                </div>
+                <ul class="history-list" id="sessionsList">
+                    <li class="history-item">✨ لا توجد جلسات بعد</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -580,18 +330,155 @@
         </div>
         <button id="resetAllBtn" style="background:#6d28d9; margin-top:15px;">🔄 إعادة تعيين الكل</button>
     </div>
-    <footer>🚨 إنذار غواصات - صوت قوي جداً (اضغط "تفعيل الصوت أولاً" قبل البدء) 🚨</footer>
+    <footer>🚨 نظام مكافآت متطور - جلسات أطول = مكافآت أكبر 🔥 السلسلة المتتالية تزيد المكافأة 🚨</footer>
 </div>
 
 <div class="stop-alert-container" id="stopAlertContainer" style="display: none;">
     <button id="stopAlertBtn" class="stop-alert-btn">🔇 إسكات الإنذار</button>
 </div>
-
 <div class="sound-status" id="soundStatus">🔇 الصوت: غير مفعل</div>
 
 <script>
     // =====================================================
-    // نظام الإنذار القوي (إنذار غواصات)
+    // نظام المكافآت المتطور + سجل الجلسات
+    // =====================================================
+    
+    // مكافآت حسب طول الجلسة (بالدقائق)
+    const sessionRewards = {
+        25: { base: 50, name: "25 دقيقة" },
+        30: { base: 60, name: "30 دقيقة" },
+        45: { base: 90, name: "45 دقيقة" },
+        60: { base: 120, name: "60 دقيقة" }
+    };
+    
+    // سجل الجلسات
+    let sessionHistory = JSON.parse(localStorage.getItem("sessionHistory")) || [];
+    let sessionStreak = parseInt(localStorage.getItem("sessionStreak")) || 0;
+    let lastSessionDate = localStorage.getItem("lastSessionDate") || null;
+    
+    // تحديث عرض مكافأة الجلسة حسب المدة المختارة
+    function updateRewardInfo() {
+        const reward = sessionRewards[currentPreset];
+        const streakBonus = sessionStreak > 0 ? ` + ${Math.min(sessionStreak * 5, 50)} XP مكافأة سلسلة` : '';
+        document.getElementById('rewardInfo').innerHTML = `🎁 عند الإكمال: +${reward.base} XP أساسي${streakBonus}`;
+    }
+    
+    // حساب مكافأة السلسلة (الحد الأقصى 50 XP إضافي)
+    function getStreakBonus() {
+        return Math.min(sessionStreak * 5, 50);
+    }
+    
+    // إضافة جلسة إلى السجل
+    function addSessionToHistory(duration, xpEarned, bonus = 0) {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('ar-EG');
+        const timeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute:'2-digit' });
+        
+        sessionHistory.unshift({
+            date: dateStr,
+            time: timeStr,
+            duration: duration,
+            xp: xpEarned,
+            bonus: bonus,
+            total: xpEarned + bonus
+        });
+        
+        // الحفاظ على آخر 10 جلسات فقط
+        if (sessionHistory.length > 10) sessionHistory.pop();
+        
+        localStorage.setItem("sessionHistory", JSON.stringify(sessionHistory));
+        renderSessionHistory();
+        
+        // تحديث السلسلة
+        const today = now.toDateString();
+        if (lastSessionDate === today) {
+            // نفس اليوم لا يزيد السلسلة
+        } else if (lastSessionDate && (new Date(lastSessionDate).getTime() + 86400000) >= now.getTime()) {
+            // يوم متتالي
+            sessionStreak++;
+        } else {
+            // بداية سلسلة جديدة
+            sessionStreak = 1;
+        }
+        lastSessionDate = today;
+        localStorage.setItem("sessionStreak", sessionStreak);
+        localStorage.setItem("lastSessionDate", lastSessionDate);
+        updateStreakDisplay();
+        updateRewardInfo();
+    }
+    
+    function renderSessionHistory() {
+        const container = document.getElementById('sessionsList');
+        if (sessionHistory.length === 0) {
+            container.innerHTML = '<li class="history-item">✨ لا توجد جلسات بعد</li>';
+            return;
+        }
+        container.innerHTML = sessionHistory.map(s => `
+            <li class="history-item">
+                <span>📅 ${s.date} ${s.time}</span>
+                <span>${s.duration} دقيقة → +${s.total} XP</span>
+            </li>
+        `).join('');
+    }
+    
+    function updateStreakDisplay() {
+        const streakBadge = document.getElementById('streakBadge');
+        streakBadge.innerHTML = `🔥 السلسلة: ${sessionStreak}`;
+        updateRewardInfo();
+    }
+    
+    // مزامنة XP يدوية (إصلاح أي خلل)
+    function manualSyncXP() {
+        const calculatedXP = calculateTotalXPFromSkills();
+        const achievementsXP = achievements.filter(a=>a.achieved).reduce((s,a)=>s+a.xpReward,0);
+        const sessionsXP = sessionHistory.reduce((sum, s) => sum + s.total, 0);
+        const expectedXP = calculatedXP + achievementsXP + sessionsXP;
+        
+        const currentXP = userXP;
+        const storedXP = parseInt(localStorage.getItem("userXP")) || 0;
+        
+        let message = `📊 مزامنة XP:\n`;
+        message += `📈 XP من المهارات: ${calculatedXP}\n`;
+        message += `🏆 XP من الإنجازات: ${achievementsXP}\n`;
+        message += `⏱️ XP من الجلسات: ${sessionsXP}\n`;
+        message += `━━━━━━━━━━━━━━━━━━\n`;
+        message += `📊 المجموع المتوقع: ${expectedXP}\n`;
+        message += `💾 XP المحفوظ: ${storedXP}\n`;
+        message += `👁️ XP المعروض: ${currentXP}\n`;
+        
+        if (expectedXP !== userXP) {
+            userXP = expectedXP;
+            localStorage.setItem("userXP", userXP);
+            updateRank();
+            message += `\n✅ تم إصلاح XP إلى ${expectedXP}!`;
+            sendNotification("🔄 مزامنة XP", `تم إصلاح XP إلى ${expectedXP}`, "✅");
+        } else {
+            message += `\n✅ XP متطابق، لا حاجة للإصلاح.`;
+        }
+        
+        alert(message);
+        refreshXP();
+        renderMissionCenter();
+    }
+    
+    function calculateTotalXPFromSkills() {
+        let totalXP = 0;
+        basicSkills.forEach(s => { totalXP += Math.floor((normalProgress[s] || 0) * 10); });
+        specialSkillsOrder.forEach(skill => {
+            for (let sub in skill.subSkills) {
+                let current = specialProgress[skill.name]?.[sub];
+                let levelsArr = skill.subSkills[sub];
+                if (current && levelsArr.includes(current)) {
+                    let index = levelsArr.indexOf(current);
+                    totalXP += Math.floor((index / (levelsArr.length - 1)) * 100 * 10);
+                }
+            }
+        });
+        return totalXP;
+    }
+    
+    // =====================================================
+    // نظام الإنذار
     // =====================================================
     let notificationPermissionGranted = false;
     let alertInterval = null;
@@ -601,191 +488,67 @@
     let audioContext = null;
     let soundActivated = false;
     
-    // تفعيل قناة الصوت (لازم لـ Chrome)
     function activateAudioContext() {
-        if (!audioContext) {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioContext.state === 'suspended') {
-            audioContext.resume();
-        }
+        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioContext.state === 'suspended') audioContext.resume();
         soundActivated = true;
         document.getElementById('soundStatus').innerHTML = '🔊 الصوت: مفعل ✅';
         document.getElementById('soundStatus').style.background = '#10b981';
-        
-        // تشغيل صوت اختبار قصير
         playSubmarineAlert(true);
-        
-        setTimeout(() => {
-            document.getElementById('soundStatus').style.background = '#1a0a2e';
-        }, 2000);
+        setTimeout(() => document.getElementById('soundStatus').style.background = '#1a0a2e', 2000);
     }
     
-    // صوت إنذار الغواصات (3 نغمات متصاعدة)
     function playSubmarineAlert(isTest = false) {
         if (!document.getElementById('enableSound')?.checked) return;
-        if (!soundActivated && !isTest) {
-            console.log("⚠️ الصوت غير مفعل. اضغط 'تفعيل الصوت أولاً'");
-            return;
-        }
-        
-        if (!audioContext) {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioContext.state === 'suspended') {
-            audioContext.resume();
-        }
-        
+        if (!soundActivated && !isTest) return;
+        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioContext.state === 'suspended') audioContext.resume();
         try {
             const now = audioContext.currentTime;
             const frequencies = [1000, 1200, 1400, 1000, 1200, 1400];
             const durations = [0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
             let time = 0;
-            
             for (let i = 0; i < frequencies.length; i++) {
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 oscillator.frequency.value = frequencies[i];
-                gainNode.gain.value = 1.0; // أعلى جهارة
-                
+                gainNode.gain.value = 1.0;
                 oscillator.start(now + time);
                 gainNode.gain.exponentialRampToValueAtTime(0.00001, now + time + durations[i]);
                 oscillator.stop(now + time + durations[i]);
-                
                 time += durations[i] + 0.05;
             }
-        } catch(e) {
-            console.log("Audio error:", e);
-        }
+        } catch(e) { console.log("Audio error:", e); }
     }
     
-    // إنذار متكرر (كل 2 ثانية)
     function startContinuousAlert() {
         if (!document.getElementById('enableSound')?.checked) return;
-        if (!soundActivated) {
-            console.log("⚠️ الصوت غير مفعل. اضغط 'تفعيل الصوت أولاً'");
-            return;
-        }
-        
+        if (!soundActivated) return;
         isAlertActive = true;
-        const stopContainer = document.getElementById('stopAlertContainer');
-        stopContainer.style.display = 'block';
-        
+        document.getElementById('stopAlertContainer').style.display = 'block';
         if (alertInterval) clearInterval(alertInterval);
-        
         playSubmarineAlert();
-        
         alertInterval = setInterval(() => {
-            if (!isAlertActive) {
-                clearInterval(alertInterval);
-                alertInterval = null;
-                stopContainer.style.display = 'none';
-                return;
-            }
+            if (!isAlertActive) { clearInterval(alertInterval); alertInterval = null; document.getElementById('stopAlertContainer').style.display = 'none'; return; }
             playSubmarineAlert();
         }, 2000);
     }
     
-    function stopAlert() {
-        isAlertActive = false;
-        if (alertInterval) {
-            clearInterval(alertInterval);
-            alertInterval = null;
-        }
-        document.getElementById('stopAlertContainer').style.display = 'none';
-        preAlertShown = false;
-    }
+    function stopAlert() { isAlertActive = false; if (alertInterval) { clearInterval(alertInterval); alertInterval = null; } document.getElementById('stopAlertContainer').style.display = 'none'; preAlertShown = false; }
+    function flashPageTitle() { for (let i = 0; i < 8; i++) { setTimeout(() => { document.title = i % 2 === 0 ? '🔴🚨 انتهت الجلسة! 🚨🔴' : originalTitle; }, i * 200); } setTimeout(() => { document.title = originalTitle; }, 2000); document.body.classList.add('flash-tab'); setTimeout(() => document.body.classList.remove('flash-tab'), 1600); }
+    function sendNotification(title, body, icon = '🧘') { if (!document.getElementById('enableNotifications')?.checked) return; if (notificationPermissionGranted && 'Notification' in window) { const notification = new Notification(`📚 ${title}`, { body: body, icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ctext y=".9em" font-size="90" x=".2em"%3E🚨%3C/text%3E%3C/svg%3E', silent: false, requireInteraction: true }); setTimeout(() => notification.close(), 15000); } }
+    function showPreAlertMessage() { if (preAlertShown) return; preAlertShown = true; const preAlert = document.createElement('div'); preAlert.className = 'pre-alert'; preAlert.innerHTML = '🚨 10 ثوانٍ متبقية على نهاية الجلسة! 🚨'; document.body.appendChild(preAlert); setTimeout(() => preAlert.remove(), 3000); }
+    function requestNotificationPermission() { if ('Notification' in window) { Notification.requestPermission().then(permission => { notificationPermissionGranted = permission === 'granted'; }); } }
     
-    function flashPageTitle() {
-        for (let i = 0; i < 8; i++) {
-            setTimeout(() => {
-                document.title = i % 2 === 0 ? '🔴🚨 إنذار! انتهت الجلسة! 🚨🔴' : originalTitle;
-            }, i * 200);
-        }
-        setTimeout(() => { document.title = originalTitle; }, 2000);
-        document.body.classList.add('flash-tab');
-        setTimeout(() => document.body.classList.remove('flash-tab'), 1600);
-    }
-    
-    function sendNotification(title, body, icon = '🧘') {
-        if (!document.getElementById('enableNotifications')?.checked) return;
-        if (notificationPermissionGranted && 'Notification' in window) {
-            const notification = new Notification(`📚 ${title}`, {
-                body: body,
-                icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ctext y=".9em" font-size="90" x=".2em"%3E🚨%3C/text%3E%3C/svg%3E',
-                silent: false,
-                requireInteraction: true
-            });
-            setTimeout(() => notification.close(), 15000);
-        }
-    }
-    
-    function triggerStrongAlert(title, body, icon = '🚨') {
-        startContinuousAlert();
-        flashPageTitle();
-        sendNotification(title, body, icon);
-    }
-    
-    function showPreAlertMessage() {
-        if (preAlertShown) return;
-        preAlertShown = true;
-        
-        const preAlert = document.createElement('div');
-        preAlert.className = 'pre-alert';
-        preAlert.innerHTML = '🚨 10 ثوانٍ متبقية على نهاية الجلسة! 🚨';
-        document.body.appendChild(preAlert);
-        
-        // تنبيه خفيف
-        if (soundActivated && audioContext) {
-            try {
-                const osc = audioContext.createOscillator();
-                const gain = audioContext.createGain();
-                osc.connect(gain);
-                gain.connect(audioContext.destination);
-                osc.frequency.value = 660;
-                gain.gain.value = 0.5;
-                osc.start();
-                gain.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.3);
-                osc.stop(audioContext.currentTime + 0.3);
-            } catch(e) {}
-        }
-        
-        setTimeout(() => preAlert.remove(), 3000);
-    }
-    
-    function requestNotificationPermission() {
-        if ('Notification' in window) {
-            Notification.requestPermission().then(permission => {
-                notificationPermissionGranted = permission === 'granted';
-            });
-        }
-    }
-    
-    // أزرار التحكم
-    document.getElementById('activateSoundBtn')?.addEventListener('click', () => {
-        activateAudioContext();
-        const btn = document.getElementById('activateSoundBtn');
-        btn.classList.add('sound-activated');
-        setTimeout(() => btn.classList.remove('sound-activated'), 500);
-    });
-    
+    document.getElementById('activateSoundBtn')?.addEventListener('click', activateAudioContext);
     document.getElementById('stopAlertBtn')?.addEventListener('click', stopAlert);
+    document.getElementById('testNotificationBtn')?.addEventListener('click', () => { if (!soundActivated) activateAudioContext(); startContinuousAlert(); flashPageTitle(); sendNotification("🧪 اختبار الإنذار", "إنذار غواصات قوي!", "🚨"); });
+    document.getElementById('syncXPBtn')?.addEventListener('click', manualSyncXP);
     
-    document.getElementById('testNotificationBtn')?.addEventListener('click', () => {
-        if (!soundActivated) {
-            alert("⚠️ يرجى الضغط على 'تفعيل الصوت أولاً' قبل اختبار الإنذار");
-            activateAudioContext();
-        }
-        triggerStrongAlert("🧪 اختبار الإنذار", "إنذار غواصات قوي جداً!", "🚨");
-    });
+    window.addEventListener('load', () => { requestNotificationPermission(); originalTitle = document.title; renderSessionHistory(); updateStreakDisplay(); updateRewardInfo(); });
     
-    window.addEventListener('load', () => {
-        requestNotificationPermission();
-        originalTitle = document.title;
-    });
-
     // =====================================================
     // TIMER SYSTEM
     // =====================================================
@@ -794,76 +557,16 @@
     let timerRunning = false;
     let currentPreset = 25;
     let preAlertTriggered = false;
-    const focusBonusXP = 25;
     const timerDisplay = document.getElementById('timerDisplay');
-
+    
     function updateTimerDisplay() {
         const minutes = Math.floor(timerSeconds / 60);
         const seconds = timerSeconds % 60;
         timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        if (timerRunning) {
-            document.title = `(${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}) SmartBoard`;
-        }
-        
-        if (timerRunning && timerSeconds <= 10 && timerSeconds > 0 && !preAlertTriggered) {
-            preAlertTriggered = true;
-            showPreAlertMessage();
-        }
+        if (timerRunning) document.title = `(${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}) SmartBoard`;
+        if (timerRunning && timerSeconds <= 10 && timerSeconds > 0 && !preAlertTriggered) { preAlertTriggered = true; showPreAlertMessage(); }
     }
-
-    function timerComplete() {
-        if (timerInterval) clearInterval(timerInterval);
-        timerRunning = false;
-        
-        let totalXP = 50;
-        let focusModeActive = document.body.classList.contains('focus-mode');
-        if (focusModeActive) totalXP += focusBonusXP;
-        
-        userXP += totalXP;
-        localStorage.setItem("userXP", userXP);
-        refreshXP();
-        
-        const focusBonusText = focusModeActive ? ` (+${focusBonusXP} XP إضافي)` : '';
-        triggerStrongAlert("⏰ جلسة تركيز مكتملة!", `🎁 +${totalXP} XP${focusBonusText}`, "🏆");
-        
-        if (focusModeActive) updateWeeklyStats(0, 0, 1);
-        
-        timerSeconds = currentPreset * 60;
-        updateTimerDisplay();
-        preAlertTriggered = false;
-        
-        if (focusModeActive) {
-            setTimeout(() => {
-                document.body.classList.remove('focus-mode');
-                document.getElementById('focusModeBtn').classList.remove('focus-active');
-                document.getElementById('focusModeBtn').innerHTML = '🧘 وضع التركيز العميق';
-                sendNotification("🧘 الخروج من وضع التركيز", "تم العودة إلى الوضع العادي", "👋");
-            }, 2000);
-        }
-        
-        document.title = originalTitle;
-    }
-
-    function startTimer() {
-        if (!soundActivated) {
-            if (confirm("⚠️ الصوت غير مفعل! هل تريد تفعيل الصوت أولاً؟")) {
-                activateAudioContext();
-            }
-        }
-        if (timerInterval) clearInterval(timerInterval);
-        timerRunning = true;
-        preAlertTriggered = false;
-        sendNotification("▶️ بدء جلسة تركيز", `المدة: ${currentPreset} دقيقة`, "⏱️");
-        timerInterval = setInterval(() => {
-            if (timerSeconds <= 1) timerComplete();
-            else { timerSeconds--; updateTimerDisplay(); }
-        }, 1000);
-    }
-
-    document.getElementById('timerStartBtn').addEventListener('click', () => { if (!timerRunning) startTimer(); });
-    document.getElementById('timerPauseBtn').addEventListener('click', () => { if (timerInterval) clearInterval(timerInterval); timerRunning = false; document.title = originalTitle; });
-    document.getElementById('timerResetBtn').addEventListener('click', () => { if (timerInterval) clearInterval(timerInterval); timerRunning = false; timerSeconds = currentPreset * 60; updateTimerDisplay(); document.title = originalTitle; preAlertTriggered = false; });
-
+    
     document.querySelectorAll('.timer-preset').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active'));
@@ -871,12 +574,70 @@
             currentPreset = parseInt(btn.getAttribute('data-time'));
             timerSeconds = currentPreset * 60;
             updateTimerDisplay();
+            updateRewardInfo();
         });
     });
     document.querySelector('.timer-preset[data-time="25"]').classList.add('active');
-
+    
+    function timerComplete() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerRunning = false;
+        
+        // حساب المكافأة
+        const reward = sessionRewards[currentPreset];
+        const streakBonus = getStreakBonus();
+        const totalXPGained = reward.base + streakBonus;
+        
+        // إضافة XP
+        userXP += totalXPGained;
+        localStorage.setItem("userXP", userXP);
+        
+        // تسجيل الجلسة
+        addSessionToHistory(currentPreset, reward.base, streakBonus);
+        
+        // تحديث الواجهة
+        updateRank();
+        refreshXP();
+        
+        // إشعار
+        sendNotification("⏰ جلسة تركيز مكتملة!", `🎁 +${totalXPGained} XP (${reward.base} + ${streakBonus} مكافأة سلسلة)`, "🏆");
+        
+        // إنذار
+        startContinuousAlert();
+        flashPageTitle();
+        
+        // إعادة ضبط المؤقت
+        timerSeconds = currentPreset * 60;
+        updateTimerDisplay();
+        preAlertTriggered = false;
+        preAlertShown = false;
+        
+        // تحديث إحصائيات التنافس
+        updateWeeklyStats(totalXPGained, 0, 1);
+        
+        document.title = originalTitle;
+        updateRewardInfo();
+    }
+    
+    function startTimer() {
+        if (!soundActivated) { if (confirm("⚠️ الصوت غير مفعل! هل تريد تفعيل الصوت أولاً؟")) activateAudioContext(); }
+        if (timerInterval) clearInterval(timerInterval);
+        timerRunning = true;
+        preAlertTriggered = false;
+        preAlertShown = false;
+        sendNotification("▶️ بدء جلسة تركيز", `المدة: ${currentPreset} دقيقة`, "⏱️");
+        timerInterval = setInterval(() => {
+            if (timerSeconds <= 1) timerComplete();
+            else { timerSeconds--; updateTimerDisplay(); }
+        }, 1000);
+    }
+    
+    document.getElementById('timerStartBtn').addEventListener('click', () => { if (!timerRunning) startTimer(); });
+    document.getElementById('timerPauseBtn').addEventListener('click', () => { if (timerInterval) clearInterval(timerInterval); timerRunning = false; document.title = originalTitle; });
+    document.getElementById('timerResetBtn').addEventListener('click', () => { if (timerInterval) clearInterval(timerInterval); timerRunning = false; timerSeconds = currentPreset * 60; updateTimerDisplay(); document.title = originalTitle; preAlertTriggered = false; preAlertShown = false; });
+    
     // =====================================================
-    // FOCUS MODE & COMPETITION (مختصر)
+    // باقي الكود (المهارات، المهام، التنافس - مختصر)
     // =====================================================
     const focusModeBtn = document.getElementById('focusModeBtn');
     focusModeBtn.addEventListener('click', () => {
@@ -884,25 +645,20 @@
         if (document.body.classList.contains('focus-mode')) {
             focusModeBtn.classList.add('focus-active');
             focusModeBtn.innerHTML = '🧘 الخروج من التركيز';
-            sendNotification("🧘 وضع التركيز العميق", "تم إخفاء جميع المهارات للتركيز الكامل", "🎯");
         } else {
             focusModeBtn.classList.remove('focus-active');
             focusModeBtn.innerHTML = '🧘 وضع التركيز العميق';
         }
     });
-
+    
     let weeklyStats = JSON.parse(localStorage.getItem("weeklyStats")) || { xp: 0, tasks: 0, focusSessions: 0, week: getWeekNumber(), month: new Date().getMonth() };
     let previousWeeklyStats = JSON.parse(localStorage.getItem("previousWeeklyStats")) || null;
     let previousMonthlyStats = JSON.parse(localStorage.getItem("previousMonthlyStats")) || null;
     let weeklyGoal = JSON.parse(localStorage.getItem("weeklyGoal")) || { target: 10, current: 0, completed: false };
     let personalBest = JSON.parse(localStorage.getItem("personalBest")) || { xp: 0, tasks: 0 };
-
-    function getWeekNumber() {
-        const now = new Date();
-        const start = new Date(now.getFullYear(), 0, 1);
-        return Math.ceil(((now - start) / 86400000 + start.getDay() + 1) / 7);
-    }
-
+    
+    function getWeekNumber() { const now = new Date(); const start = new Date(now.getFullYear(), 0, 1); return Math.ceil(((now - start) / 86400000 + start.getDay() + 1) / 7); }
+    
     function updateWeeklyStats(xpGain = 0, taskGain = 0, focusGain = 0) {
         const currentWeek = getWeekNumber();
         if (weeklyStats.week !== currentWeek) {
@@ -915,7 +671,6 @@
         weeklyStats.tasks += taskGain;
         weeklyStats.focusSessions += focusGain;
         weeklyGoal.current = weeklyStats.tasks;
-        
         if (!weeklyGoal.completed && weeklyGoal.current >= weeklyGoal.target) {
             weeklyGoal.completed = true;
             userXP += 200;
@@ -923,186 +678,66 @@
             refreshXP();
             sendNotification("🎯 حققت الهدف الأسبوعي!", "+200 XP مكافأة", "🏆");
         }
-        
         localStorage.setItem("weeklyStats", JSON.stringify(weeklyStats));
         localStorage.setItem("weeklyGoal", JSON.stringify(weeklyGoal));
-        
-        if (weeklyStats.xp > personalBest.xp) {
-            personalBest.xp = weeklyStats.xp;
-            sendNotification("🏆 رقم قياسي جديد!", `سجلت ${personalBest.xp} XP في أسبوع واحد`, "⭐");
-        }
-        if (weeklyStats.tasks > personalBest.tasks) {
-            personalBest.tasks = weeklyStats.tasks;
-            sendNotification("🏆 رقم قياسي جديد!", `أنهيت ${personalBest.tasks} مهمة في أسبوع`, "⭐");
-        }
+        if (weeklyStats.xp > personalBest.xp) { personalBest.xp = weeklyStats.xp; sendNotification("🏆 رقم قياسي جديد!", `سجلت ${personalBest.xp} XP في أسبوع واحد`, "⭐"); }
+        if (weeklyStats.tasks > personalBest.tasks) { personalBest.tasks = weeklyStats.tasks; sendNotification("🏆 رقم قياسي جديد!", `أنهيت ${personalBest.tasks} مهمة في أسبوع`, "⭐"); }
         localStorage.setItem("personalBest", JSON.stringify(personalBest));
     }
-
-    function updateMonthlyStats() {
-        const currentMonth = new Date().getMonth();
-        if (weeklyStats.month !== currentMonth) {
-            previousMonthlyStats = { xp: weeklyStats.xp, tasks: weeklyStats.tasks };
-            localStorage.setItem("previousMonthlyStats", JSON.stringify(previousMonthlyStats));
-            weeklyStats.month = currentMonth;
-            localStorage.setItem("weeklyStats", JSON.stringify(weeklyStats));
-        }
-    }
-
+    
+    function updateMonthlyStats() { const currentMonth = new Date().getMonth(); if (weeklyStats.month !== currentMonth) { previousMonthlyStats = { xp: weeklyStats.xp, tasks: weeklyStats.tasks }; localStorage.setItem("previousMonthlyStats", JSON.stringify(previousMonthlyStats)); weeklyStats.month = currentMonth; localStorage.setItem("weeklyStats", JSON.stringify(weeklyStats)); } }
+    
     function renderCompetition() {
         updateMonthlyStats();
-        const weeklyComp = previousWeeklyStats ? {
-            xp: weeklyStats.xp - (previousWeeklyStats.xp || 0),
-            tasks: weeklyStats.tasks - (previousWeeklyStats.tasks || 0),
-            focus: weeklyStats.focusSessions - (previousWeeklyStats.focusSessions || 0)
-        } : { xp: weeklyStats.xp, tasks: weeklyStats.tasks, focus: weeklyStats.focusSessions };
-        
+        const weeklyComp = previousWeeklyStats ? { xp: weeklyStats.xp - (previousWeeklyStats.xp || 0), tasks: weeklyStats.tasks - (previousWeeklyStats.tasks || 0), focus: weeklyStats.focusSessions - (previousWeeklyStats.focusSessions || 0) } : { xp: weeklyStats.xp, tasks: weeklyStats.tasks, focus: weeklyStats.focusSessions };
         const weeklyPercent = previousWeeklyStats ? ((weeklyStats.xp - previousWeeklyStats.xp) / (previousWeeklyStats.xp || 1) * 100).toFixed(0) : 100;
-        
-        document.getElementById('competitionContent').innerHTML = `
-            <div class="comp-card"><span>🗡️ XP هذا الأسبوع:</span><span><strong>${weeklyStats.xp}</strong> XP</span><span class="${weeklyComp.xp >= 0 ? 'comp-improvement' : 'comp-decline'}">${weeklyComp.xp >= 0 ? '▲ +' : '▼ '}${Math.abs(weeklyComp.xp)} XP (${weeklyPercent}%)</span></div>
+        document.getElementById('competitionContent').innerHTML = `<div class="comp-card"><span>🗡️ XP هذا الأسبوع:</span><span><strong>${weeklyStats.xp}</strong> XP</span><span class="${weeklyComp.xp >= 0 ? 'comp-improvement' : 'comp-decline'}">${weeklyComp.xp >= 0 ? '▲ +' : '▼ '}${Math.abs(weeklyComp.xp)} XP (${weeklyPercent}%)</span></div>
             <div class="comp-card"><span>✅ المهام المنجزة:</span><span><strong>${weeklyStats.tasks}</strong> مهمة</span><span class="${weeklyComp.tasks >= 0 ? 'comp-improvement' : 'comp-decline'}">${weeklyComp.tasks >= 0 ? '▲ +' : '▼ '}${Math.abs(weeklyComp.tasks)}</span></div>
             <div class="comp-card"><span>⏱️ جلسات التركيز:</span><span><strong>${weeklyStats.focusSessions}</strong> جلسة</span><span class="${weeklyComp.focus >= 0 ? 'comp-improvement' : 'comp-decline'}">${weeklyComp.focus >= 0 ? '▲ +' : '▼ '}${Math.abs(weeklyComp.focus)}</span></div>
             <div class="comp-card"><span>🏆 أفضل رقم أسبوعي (XP):</span><span><strong>${personalBest.xp}</strong> XP</span></div>
-            <div class="comp-card"><span>🏆 أفضل رقم أسبوعي (مهام):</span><span><strong>${personalBest.tasks}</strong> مهمة</span></div>
-        `;
-        
+            <div class="comp-card"><span>🏆 أفضل رقم أسبوعي (مهام):</span><span><strong>${personalBest.tasks}</strong> مهمة</span></div>`;
         const goalPercent = (weeklyGoal.current / weeklyGoal.target * 100).toFixed(0);
-        document.getElementById('weeklyGoalContent').innerHTML = `
-            <div class="comp-header"><span>🎯 الهدف الأسبوعي: ${weeklyGoal.current}/${weeklyGoal.target} مهمة</span><span>${goalPercent}%</span></div>
-            <div class="xp-bar-container" style="margin-top:5px;"><div class="xp-bar-fill" style="width: ${goalPercent}%;"></div></div>
-            ${weeklyGoal.completed ? '<span style="color:#10b981;">✅ تم تحقيق الهدف الأسبوعي! +200 XP</span>' : ''}
-        `;
+        document.getElementById('weeklyGoalContent').innerHTML = `<div class="comp-header"><span>🎯 الهدف الأسبوعي: ${weeklyGoal.current}/${weeklyGoal.target} مهمة</span><span>${goalPercent}%</span></div>
+            <div class="xp-bar-container" style="margin-top:5px;"><div class="xp-bar-fill" style="width: ${goalPercent}%;"></div></div>${weeklyGoal.completed ? '<span style="color:#10b981;">✅ تم تحقيق الهدف الأسبوعي! +200 XP</span>' : ''}`;
     }
-
+    
     let competitionModeActive = false;
     const competitionModeBtn = document.getElementById('competitionModeBtn');
     const competitionPanel = document.getElementById('competitionPanel');
+    competitionModeBtn.addEventListener('click', () => { competitionModeActive = !competitionModeActive; if (competitionModeActive) { competitionPanel.style.display = 'block'; competitionModeBtn.classList.add('active'); renderCompetition(); } else { competitionPanel.style.display = 'none'; competitionModeBtn.classList.remove('active'); } });
     
-    competitionModeBtn.addEventListener('click', () => {
-        competitionModeActive = !competitionModeActive;
-        if (competitionModeActive) {
-            competitionPanel.style.display = 'block';
-            competitionModeBtn.classList.add('active');
-            renderCompetition();
-        } else {
-            competitionPanel.style.display = 'none';
-            competitionModeBtn.classList.remove('active');
-        }
-    });
-
-    // =====================================================
-    // TASKS SYSTEM (مختصر)
-    // =====================================================
+    // المهام والمهارات (نفس الكود السابق ولكن مختصر)
     let personalTasks = JSON.parse(localStorage.getItem("personalTasks")) || [];
     let lastUpdateDates = JSON.parse(localStorage.getItem("lastUpdateDates")) || {};
-
-    function updateLastUpdateDate(skillName, subSkill = null) {
-        const key = subSkill ? `${skillName}_${subSkill}` : skillName;
-        lastUpdateDates[key] = Date.now();
-        localStorage.setItem("lastUpdateDates", JSON.stringify(lastUpdateDates));
-    }
-
-    function getDaysSinceLastUpdate(skillName, subSkill = null) {
-        const key = subSkill ? `${skillName}_${subSkill}` : skillName;
-        const lastUpdate = lastUpdateDates[key];
-        if (!lastUpdate) return null;
-        return Math.floor((Date.now() - lastUpdate) / (1000 * 60 * 60 * 24));
-    }
-
+    
+    function updateLastUpdateDate(skillName, subSkill = null) { const key = subSkill ? `${skillName}_${subSkill}` : skillName; lastUpdateDates[key] = Date.now(); localStorage.setItem("lastUpdateDates", JSON.stringify(lastUpdateDates)); }
+    function getDaysSinceLastUpdate(skillName, subSkill = null) { const key = subSkill ? `${skillName}_${subSkill}` : skillName; const lastUpdate = lastUpdateDates[key]; if (!lastUpdate) return null; return Math.floor((Date.now() - lastUpdate) / (1000 * 60 * 60 * 24)); }
+    
     function checkOverdueSkills() {
         const overdue = [];
-        basicSkills.forEach(skill => {
-            const days = getDaysSinceLastUpdate(skill);
-            if (days !== null && days >= 7 && normalProgress[skill] > 0 && normalProgress[skill] < 100) {
-                overdue.push({ skill, sub: null, days });
-            }
-        });
-        specialSkillsOrder.forEach(skillObj => {
-            for (let sub in skillObj.subSkills) {
-                const days = getDaysSinceLastUpdate(skillObj.name, sub);
-                const current = specialProgress[skillObj.name]?.[sub];
-                const levelsArr = skillObj.subSkills[sub];
-                const isComplete = current === levelsArr[levelsArr.length-1];
-                if (days !== null && days >= 7 && !isComplete) {
-                    overdue.push({ skill: skillObj.name, sub, days });
-                }
-            }
-        });
+        basicSkills.forEach(skill => { const days = getDaysSinceLastUpdate(skill); if (days !== null && days >= 7 && normalProgress[skill] > 0 && normalProgress[skill] < 100) overdue.push({ skill, sub: null, days }); });
+        specialSkillsOrder.forEach(skillObj => { for (let sub in skillObj.subSkills) { const days = getDaysSinceLastUpdate(skillObj.name, sub); const current = specialProgress[skillObj.name]?.[sub]; const levelsArr = skillObj.subSkills[sub]; const isComplete = current === levelsArr[levelsArr.length-1]; if (days !== null && days >= 7 && !isComplete) overdue.push({ skill: skillObj.name, sub, days }); } });
         return overdue;
     }
-
-    function addPersonalTask(taskName) {
-        if (!taskName.trim()) return;
-        personalTasks.push({ name: taskName.trim(), completed: false, addedAt: Date.now() });
-        saveAll();
-        renderMissionCenter();
-    }
-
-    function togglePersonalTask(index) {
-        personalTasks[index].completed = !personalTasks[index].completed;
-        if (personalTasks[index].completed) {
-            userXP += 20;
-            localStorage.setItem("userXP", userXP);
-            refreshXP();
-            updateWeeklyStats(20, 1, 0);
-            sendNotification("✅ أنجزت مهمة!", `+20 XP - "${personalTasks[index].name}"`, "🎯");
-        }
-        saveAll();
-        renderMissionCenter();
-    }
-
-    function deletePersonalTask(index) {
-        personalTasks.splice(index, 1);
-        saveAll();
-        renderMissionCenter();
-    }
-
-    function completeSuggestedTask(skill, sub) {
-        userXP += 30;
-        localStorage.setItem("userXP", userXP);
-        refreshXP();
-        updateWeeklyStats(30, 1, 0);
-        updateLastUpdateDate(skill, sub || null);
-        sendNotification("📚 راجعت مهارة مهملة!", `+30 XP - ${sub ? skill + ' - ' + sub : skill}`, "⭐");
-        renderMissionCenter();
-        renderSkills();
-    }
-
+    
+    function addPersonalTask(taskName) { if (!taskName.trim()) return; personalTasks.push({ name: taskName.trim(), completed: false, addedAt: Date.now() }); saveAll(); renderMissionCenter(); }
+    function togglePersonalTask(index) { personalTasks[index].completed = !personalTasks[index].completed; if (personalTasks[index].completed) { userXP += 20; localStorage.setItem("userXP", userXP); refreshXP(); updateWeeklyStats(20, 1, 0); sendNotification("✅ أنجزت مهمة!", `+20 XP - "${personalTasks[index].name}"`, "🎯"); } saveAll(); renderMissionCenter(); }
+    function deletePersonalTask(index) { personalTasks.splice(index, 1); saveAll(); renderMissionCenter(); }
+    function completeSuggestedTask(skill, sub) { userXP += 30; localStorage.setItem("userXP", userXP); refreshXP(); updateWeeklyStats(30, 1, 0); updateLastUpdateDate(skill, sub || null); sendNotification("📚 راجعت مهارة مهملة!", `+30 XP - ${sub ? skill + ' - ' + sub : skill}`, "⭐"); renderMissionCenter(); renderSkills(); }
+    
     function renderMissionCenter() {
         const personalList = document.getElementById('personalTasksList');
-        if (personalTasks.length === 0) {
-            personalList.innerHTML = '<li class="empty-message">✨ لا توجد مهام شخصية</li>';
-        } else {
-            personalList.innerHTML = personalTasks.map((task, idx) => `
-                <li class="mission-item ${task.completed ? 'completed' : ''}">
-                    <span>${task.name}</span>
-                    <div class="mission-actions">
-                        ${!task.completed ? `<button class="complete-btn" data-personal-idx="${idx}">✔ تم</button>` : ''}
-                        <button class="delete-btn" data-personal-delete="${idx}">🗑</button>
-                    </div>
-                </li>
-            `).join('');
-        }
-
+        if (personalTasks.length === 0) personalList.innerHTML = '<li class="empty-message">✨ لا توجد مهام شخصية</li>';
+        else personalList.innerHTML = personalTasks.map((task, idx) => `<li class="mission-item ${task.completed ? 'completed' : ''}"><span>${task.name}</span><div class="mission-actions">${!task.completed ? `<button class="complete-btn" data-personal-idx="${idx}">✔ تم</button>` : ''}<button class="delete-btn" data-personal-delete="${idx}">🗑</button></div></li>`).join('');
         const overdue = checkOverdueSkills();
         const suggestedList = document.getElementById('suggestedTasksList');
-        if (overdue.length === 0) {
-            suggestedList.innerHTML = '<li class="empty-message">✨ لا توجد مهارات مهملة</li>';
-        } else {
-            suggestedList.innerHTML = overdue.map(item => {
-                const name = item.sub ? `${item.skill} - ${item.sub}` : item.skill;
-                return `<li class="mission-item"><span>📢 ${name} (مهملة منذ ${item.days} يوم)</span><button class="review-suggestion-btn" data-suggest-skill="${item.skill}" data-suggest-sub="${item.sub || ''}">مراجعة (+30 XP)</button></li>`;
-            }).join('');
-        }
-
+        if (overdue.length === 0) suggestedList.innerHTML = '<li class="empty-message">✨ لا توجد مهارات مهملة</li>';
+        else suggestedList.innerHTML = overdue.map(item => { const name = item.sub ? `${item.skill} - ${item.sub}` : item.skill; return `<li class="mission-item"><span>📢 ${name} (مهملة منذ ${item.days} يوم)</span><button class="review-suggestion-btn" data-suggest-skill="${item.skill}" data-suggest-sub="${item.sub || ''}">مراجعة (+30 XP)</button></li>`; }).join('');
         document.querySelectorAll('[data-personal-idx]').forEach(btn => btn.addEventListener('click', (e) => { togglePersonalTask(parseInt(btn.getAttribute('data-personal-idx'))); }));
         document.querySelectorAll('[data-personal-delete]').forEach(btn => btn.addEventListener('click', (e) => { deletePersonalTask(parseInt(btn.getAttribute('data-personal-delete'))); }));
         document.querySelectorAll('[data-suggest-skill]').forEach(btn => btn.addEventListener('click', (e) => { completeSuggestedTask(btn.getAttribute('data-suggest-skill'), btn.getAttribute('data-suggest-sub')); }));
     }
-
-    // =====================================================
-    // RANKS & SKILLS
-    // =====================================================
+    
     const RANKS = [
         { name: "المنبوذ", en: "The Outcast", xpRequired: 0, icon: "🚫", nextXp: 800 },
         { name: "الساقط", en: "The Fallen", xpRequired: 800, icon: "💔", nextXp: 1800 },
@@ -1118,7 +753,7 @@
         { name: "الأسطورة المنسية", en: "Forgotten Legend", xpRequired: 44000, icon: "📜", nextXp: 60000 },
         { name: "توجي - القاتل الأعلى", en: "Toji - Supreme Slayer", xpRequired: 60000, icon: "⚡🗡️", nextXp: null }
     ];
-
+    
     const ACHIEVEMENTS = [
         { id: "first_100", name: "🎯 أول 100%", xpReward: 500, achieved: false },
         { id: "five_skills", name: "🌟 5 مهارات كاملة", xpReward: 1000, achieved: false },
@@ -1126,11 +761,11 @@
         { id: "all_normal", name: "💪 إتقان الأساسيات", xpReward: 3000, achieved: false },
         { id: "quran_master", name: "📖 حافظ القرآن", xpReward: 2500, achieved: false }
     ];
-
+    
     let userXP = 0;
     let currentRankIndex = 0;
     let achievements = JSON.parse(localStorage.getItem("achievements")) || ACHIEVEMENTS.map(a => ({ ...a, achieved: false }));
-
+    
     const basicSkills = [
         "Data Analytics", "Time Management", "Communication", "Creative Thinking",
         "Social Skills", "Branding", "Budgeting", "Business Management",
@@ -1154,23 +789,7 @@
     let resources = JSON.parse(localStorage.getItem("allResources")) || {};
     
     userXP = parseInt(localStorage.getItem("userXP")) || 0;
-
-    function calculateTotalXP() {
-        let totalXP = 0;
-        basicSkills.forEach(s => { totalXP += Math.floor((normalProgress[s] || 0) * 10); });
-        specialSkillsOrder.forEach(skill => {
-            for (let sub in skill.subSkills) {
-                let current = specialProgress[skill.name]?.[sub];
-                let levelsArr = skill.subSkills[sub];
-                if (current && levelsArr.includes(current)) {
-                    let index = levelsArr.indexOf(current);
-                    totalXP += Math.floor((index / (levelsArr.length - 1)) * 100 * 10);
-                }
-            }
-        });
-        return totalXP;
-    }
-
+    
     function updateRank() {
         let newIndex = 0;
         for (let i = RANKS.length-1; i>=0; i--) if (userXP >= RANKS[i].xpRequired) { newIndex = i; break; }
@@ -1197,16 +816,13 @@
             document.getElementById('nextLevelText').innerHTML = `👑 أنت في القمة! ${rank.name} 👑`;
         }
     }
-
+    
     function refreshXP() {
-        let newXP = calculateTotalXP();
-        let achievementsXP = achievements.filter(a=>a.achieved).reduce((s,a)=>s+a.xpReward,0);
-        newXP += achievementsXP;
-        if (newXP !== userXP) { userXP = newXP; localStorage.setItem("userXP", userXP); updateRank(); }
-        checkAchievements();
+        updateRank();
         if (competitionModeActive) renderCompetition();
+        updateStats();
     }
-
+    
     function checkAchievements() {
         let completedCount = basicSkills.filter(s=>normalProgress[s]===100).length;
         specialSkillsOrder.forEach(s=>{ let all=true; for(let sub in s.subSkills) if(specialProgress[s.name]?.[sub] !== s.subSkills[sub][s.subSkills[sub].length-1]) all=false; if(all) completedCount++; });
@@ -1223,7 +839,7 @@
         localStorage.setItem("userXP", userXP);
         updateRank();
     }
-
+    
     function getNormalResourceKey(skill) { return `normal_${skill}`; }
     function getSpecialResourceKey(skill, sub, lvl) { return `special_${skill}_${sub}_${lvl}`; }
     
@@ -1308,8 +924,10 @@
         if(confirm("⚠️ إعادة ضبط كل شيء؟")){ 
             basicSkills.forEach(s=>normalProgress[s]=0); 
             specialSkillsOrder.forEach(skill=>{ for(let sub in skill.subSkills) specialProgress[skill.name][sub]=skill.subSkills[sub][0]; }); 
-            resources={}; personalTasks=[]; userXP=0; achievements=ACHIEVEMENTS.map(a=>({...a,achieved:false})); lastUpdateDates={}; 
-            saveAll(); renderSkills(); updateStats(); refreshXP(); renderMissionCenter(); 
+            resources={}; personalTasks=[]; userXP=0; achievements=ACHIEVEMENTS.map(a=>({...a,achieved:false})); lastUpdateDates={}; sessionHistory=[]; sessionStreak=0; lastSessionDate=null;
+            localStorage.clear();
+            saveAll(); localStorage.setItem("sessionHistory", JSON.stringify(sessionHistory)); renderSessionHistory(); updateStreakDisplay();
+            renderSkills(); updateStats(); refreshXP(); renderMissionCenter(); 
             sendNotification("🔄 إعادة ضبط النظام", "تم مسح جميع البيانات بنجاح", "⚙️");
         } 
     });
